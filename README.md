@@ -1,5 +1,10 @@
 # AstroImageJ
 
+> ⚠️ **Unofficial zh_CN build / 非官方汉化版** — This is a community Chinese-localized fork of
+> [AstroImageJ](https://github.com/AstroImageJ/astroimagej). It is **not** an official release and is **not**
+> endorsed by the AstroImageJ authors. Distributed under the GPLv3 (same as upstream). Localization notes:
+> [LOCALIZATION.md](LOCALIZATION.md) · 中文说明:[README_zh_CN.md](README_zh_CN.md) · Switch language with the JVM flag `-Daij.lang=zh_CN`.
+
 Merged project of Dr. Karen Collins' AstroImageJ, using the [Why Java Launcher](https://github.com/AstroImageJ/Why).
 
 ## Developer Instructions
