@@ -48,12 +48,17 @@ import nom.tam.fits.compression.provider.param.quant.QuantizeParameters;
 public class QuantizeOption implements ICompressOption {
 
     /**
-     * and including NULL_VALUE. These values may not be used to represent the quantized and scaled floating point pixel
-     * values If lossy Hcompression is used, and the tiledImageOperation contains null values, then it is also possible
-     * for the compressed values to slightly exceed the range of the actual (lossless) values so we must reserve a
-     * little more space value used to represent undefined pixels
+     * The integer value recommeded by the FITS standard to represent NaN floating-point values in integer compressed
+     * data.
      */
-    private static final int NULL_VALUE = Integer.MIN_VALUE + 1;
+    public static final int RECOMMENDED_NAN_INDICATOR = Integer.MIN_VALUE;
+
+    /**
+     * value used to represent zero-valued pixels when dither method 2 is used.
+     */
+    private static final int DITHER2_ZERO_INDICATOR = Integer.MIN_VALUE + 1;
+
+    private static boolean useFMA = false;
 
     /** Shared configuration across copies */
     private Config config;
@@ -71,8 +76,6 @@ public class QuantizeOption implements ICompressOption {
 
     private Integer nullValueIndicator;
 
-    private boolean checkNull;
-
     private int intMaxValue;
 
     private int intMinValue;
@@ -86,6 +89,21 @@ public class QuantizeOption implements ICompressOption {
     private int tileHeight;
 
     private int tileWidth;
+
+    /** Quantization constant */
+    private static final int RANDOM_MULTIPLICATOR = 500;
+
+    private static final double DITHER_HALF = 0.5;
+
+    /**
+     * Dither random seed value
+     */
+    private int iseed;
+
+    /**
+     * Next random dither value
+     */
+    private int nextRandom;
 
     QuantizeOption() {
         this(null);
@@ -119,9 +137,12 @@ public class QuantizeOption implements ICompressOption {
     }
 
     /**
-     * Returns the integer value that represents missing (<code>null</code>) data in the quantized representation.
+     * Returns the integer value that represents missing (<code>null</code>) for integer compressed floating-point data.
+     * This funtion was named poorly as it sets the <code>ZBLANK</code> value in the header or in the equivalently named
+     * column.
      * 
-     * @return the integer blanking value (<code>null</code> value).
+     * @return the integer blanking value (for integer-compressed <code>NaN</code>s). If the returned value is
+     *             <code>null</code>, then the recommended value -2147483647 will be used as needed.
      * 
      * @see    #setBNull(Integer)
      */
@@ -130,7 +151,10 @@ public class QuantizeOption implements ICompressOption {
     }
 
     /**
-     * Returns the quantization level.
+     * Returns the quantization level for integer compressed floating-point data. This funtion was named poorly as it
+     * sets the <code>ZSCALE</code> parameter value in the named column when compressing floating-point data with an
+     * algorithm that supports integers only. It has nothing to do with the <code>BSCALE</code> header value, which
+     * indicates the integer representation of floating-point data for the <i>uncompressed</i> data.
      * 
      * @return the floating-point difference between integer levels in the quantized data.
      * 
@@ -142,7 +166,10 @@ public class QuantizeOption implements ICompressOption {
     }
 
     /**
-     * Returns the quantization offset.
+     * Returns the quantization offset for integer compressed floating-point data. This funtion was named poorly as it
+     * sets the <code>ZZERO</code> parameter value in the named column when compressing floating-point data with an
+     * algorithm that supports integers only. It has nothing to do with the <code>BZERO</code> header value, which
+     * indicates the integer representation of floating-point data for the <i>uncompressed</i> data.
      * 
      * @return the floating-point value corresponding to the integer level 0.
      * 
@@ -237,30 +264,33 @@ public class QuantizeOption implements ICompressOption {
     }
 
     /**
-     * Returns the floating-point value that indicates a <code>null</code> datum in the image before quantization is
+     * Returns the floating-point value that indicates missing or invalid data in the image before quantization is
      * applied. Normally, the FITS standard is that NaN values indicate <code>null</code> values in floating-point
      * images. While this class allows using other values also, they are not recommended since they are not supported by
      * FITS in a standard way.
      * 
-     * @return the floating-point value that represents a <code>null</code> value (missing data) in the image before
-     *             quantization.
+     * @return     the floating-point value that represents a <code>null</code> value (missing data) in the image before
+     *                 quantization.
      * 
-     * @see    #setNullValue(double)
-     * @see    #getNullValueIndicator()
-     * @see    #isCheckNull()
+     * @see        #setNullValue(double)
+     * @see        #getBNull()
+     * 
+     * @deprecated The FITS standard allows only NaNs to indicate missing / invalid floating-point data.
      */
+    @Deprecated
     public double getNullValue() {
         return nullValue;
     }
 
     /**
-     * @deprecated use {@link #getBNull()} instead (duplicate method). Returns the integer value that represents missing
-     *                 data (<code>null</code>) in the quantized representation.
+     * @deprecated use {@link #getBNull()} instead (duplicate method). Returns the integer value that represents
+     *                 <code>NaN</code> values in integer-compressed floating-point data.
      * 
      * @return     the integer blanking value (<code>null</code> value).
      * 
      * @see        #setBNull(Integer)
      */
+    @Deprecated
     public final Integer getNullValueIndicator() {
         return getBNull();
     }
@@ -333,7 +363,7 @@ public class QuantizeOption implements ICompressOption {
      * Checks whether we force the integer quantized level 0 to correspond to a floating-point level 0.0, when using
      * automatic quantization.
      * 
-     * @return <code>true</code> if we want to keep `BZERO` at 0 when quantizing automatically.
+     * @return <code>true</code> if we want to keep `ZZERO` at 0.0 when quantizing automatically.
      * 
      * @see    #setCenterOnZero(boolean)
      */
@@ -344,28 +374,33 @@ public class QuantizeOption implements ICompressOption {
     /**
      * Whether the floating-point data may contain <code>null</code> values (normally NaNs).
      * 
-     * @return <code>true</code> if we should expect <code>null</code> in the floating-point data. This is automatically
-     *             <code>true</code> if {@link #setBNull(Integer)} was called with a non-null value.
+     * @return     <code>true</code> (always since 1.23).
      * 
-     * @see    #setBNull(Integer)
+     * @see        #setBNull(Integer)
+     * 
+     * @deprecated Use {@link #getBNull()} instead to see if a custom null-value indicator has been configured.
      */
-    public boolean isCheckNull() {
-        return checkNull;
+    @Deprecated
+    public final boolean isCheckNull() {
+        return true;
     }
 
     /**
-     * Whether automatic quantization treats 0.0 as a special value. Normally values within the `BSCALE` quantization
-     * level around 0.0 will be assigned the same integer quanta, and will become indistinguishable in the quantized
-     * data. Some software may, in their misguided ways, assign exact zero values a special meaning (such as no data) in
-     * which case we may want to distinguish these as we apply quantization. However, it is generally not a good idea to
-     * use 0 as a special value.
+     * Whether automatic quantization treats 0.0 as a special value. The special treatment of 0.0 values is the
+     * distinguishing feature of dither method 2 over method 1.
      * 
-     * @return <code>true</code> to treat 0.0 (exact) as a special value, or <code>false</code> to treat is as any other
-     *             measured value (recommended).
+     * @deprecated Use {@link #isDither2()} instead. The special treatent of ero values is the distinghuishing feature
+     *                 of the <code>SUBTRACTIVE_DITHER_2</code> method, which is otherwise the same as
+     *                 <code>SUBTRACTIVE_DITHER_1</code>.
      * 
-     * @see    #setCheckZero(boolean)
-     * @see    #getBScale()
+     * @return     <code>true</code> to treat 0.0 (exact) as a special value, or <code>false</code> to treat is as any
+     *                 other measured value (recommended).
+     * 
+     * @see        #isDither2()
+     * @see        #setDither2(boolean)
+     * @see        #getBScale()
      */
+    @Deprecated
     public boolean isCheckZero() {
         return config.checkZero;
     }
@@ -383,15 +418,15 @@ public class QuantizeOption implements ICompressOption {
     }
 
     /**
-     * Whether dither method 2 is used.
+     * Whether dithering (when enabled) uses method 2, which treats 0.0 values as special.
      * 
-     * @return <code>true</code> if dither method 2 is used, or else <code>false</code>
+     * @return <code>true</code> if method 2 is used is used for dithering, or else <code>false</code>
      * 
      * @see    #setDither2(boolean)
      * @see    #isDither()
      */
     public boolean isDither2() {
-        return config.dither2;
+        return config.checkZero;
     }
 
     @Override
@@ -400,29 +435,29 @@ public class QuantizeOption implements ICompressOption {
     }
 
     /**
-     * Sets the integer value that represents missing data (<code>null</code>) in the quantized representation.
+     * Sets the integer value that represents missing data (<code>null</code>) for integer compressed floating-point
+     * data. This funtion was named poorly as it sets the <code>ZBLANK</code> value in the header or in the equivalently
+     * named column.
      * 
-     * @param  blank the new integer blanking value (that is one that denotes a missing or <code>null</code> datum).
-     *                   Setting this option to <code>null</code> disables the treatment of issing or <code>null</code>
-     *                   data.
+     * @param  blank the new integer value that denotes <code>NaN</code> when floating-point data is compressed with an
+     *                   integer-only algorithm. Setting this option to <code>null</code> will set the header
+     *                   <code>ZBLANK</code> value, when the data contains NaNs, to -2147483647 (i.e., the value
+     *                   recommended by the FITS standard).
      * 
      * @return       itself
      * 
      * @see          #getBNull()
-     * @see          #isCheckNull()
      */
-    public ICompressOption setBNull(Integer blank) {
-        if (blank != null) {
-            nullValueIndicator = blank;
-            checkNull = true;
-        } else {
-            checkNull = false;
-        }
+    public QuantizeOption setBNull(Integer blank) {
+        nullValueIndicator = blank;
         return this;
     }
 
     /**
-     * Sets the quantization level.
+     * Sets the quantization level for integer compressed floating-point data. This funtion was named poorly as it sets
+     * the <code>ZZERO</code> parameter value in the named column when compressing floating-point data with an algorithm
+     * that supports integers only. It has nothing to do with the <code>BZERO</code> header value, which indicates the
+     * integer representation of floating-point data for the <i>uncompressed</i> data.
      * 
      * @param  value the new floating-point difference between integer levels in the quantized data.
      * 
@@ -438,7 +473,10 @@ public class QuantizeOption implements ICompressOption {
     }
 
     /**
-     * Sets the quantization offset.
+     * Sets the quantization offset for integer compressed floating-point data. This funtion was named poorly as it sets
+     * the <code>ZZERO</code> parameter value in the named column when compressing floating-point data with an algorithm
+     * that supports integers only. It has nothing to do with the <code>BZERO</code> header value, which indicates the
+     * integer representation of floating-point data for the <i>uncompressed</i> data.
      * 
      * @param  value the new floating-point value corresponding to the integer level 0.
      * 
@@ -453,9 +491,9 @@ public class QuantizeOption implements ICompressOption {
     }
 
     /**
-     * Enabled or disables keeping `BZERO` at 0 when using automatic quantization.
+     * Enabled or disables keeping `ZZERO` at 0 when using automatic quantization.
      * 
-     * @param  value <code>true</code> to keep `BZERO` at 0 when quantizing automatically, that is keep the integer
+     * @param  value <code>true</code> to keep `ZZERO` at 0 when quantizing automatically, that is keep the integer
      *                   quantized level 0 correspond to floating-point level 0.0. Or, <code>false</code> to let the
      *                   automatic quantization algorithm determine the optimal quantization offset.
      * 
@@ -469,46 +507,42 @@ public class QuantizeOption implements ICompressOption {
     }
 
     /**
-     * @deprecated       {@link #setBNull(Integer)} controls this feature automatically as needed. Sets whether we
-     *                       should expect the floating-point data to contain <code>null</code> values (normally NaNs).
+     * Obsolete method that used to set whether we should expect the floating-point data to contain <code>null</code>
+     * values (NaNs).
      * 
-     * @param      value <code>true</code> if the floating-point data may contain <code>null</code> values.
+     * @deprecated       This feature is set automatically as needed.
+     * 
+     * @param      value (unused since 1.23)
      * 
      * @return           itself
      * 
-     * @see              #setCheckNull(boolean)
      * @see              #setBNull(Integer)
-     * @see              #getNullValue()
      */
+    @Deprecated
     public QuantizeOption setCheckNull(boolean value) {
-        checkNull = value;
-        if (nullValueIndicator == null) {
-            nullValueIndicator = NULL_VALUE;
-        }
         return this;
     }
 
     /**
-     * Sets whether automatic quantization is to treat 0.0 as a special value. Normally values within the `BSCALE`
-     * quantization level around 0.0 will be assigned the same integer quanta, and will become indistinguishable in the
-     * quantized data. However some software may assign exact zero values a special meaning (such as no data) in which
-     * case we may want to distinguish these as we apply qunatization. However, it is generally not a good idea to use 0
-     * as a special value. To mark missing data, the FITS standard recognises only NaN as a special value -- while all
-     * other values should constitute valid measurements.
+     * Sets whether automatic quantization is to treat 0.0 as a special value. This is the same as
+     * {@link #setDither2(boolean)}. When enabled and dithering is used, then 0.0 values will be denoted with the
+     * special value −2147483647 in the quantized representation.
      * 
-     * @deprecated       It is strongly discouraged to treat 0.0 values as special. FITS only recognises NaN as a
-     *                       special floating-point value marking missing data. All other floating point values are
-     *                       considered valid measurements.
+     * @deprecated       Use {@link #setDither2(boolean)} instead if you want zero values to be special encoded. The
+     *                       representation of true zero values is the unique feature of the
+     *                       <code>SUBTRACTIVE_DITHER_2</code> method that sets it apart from
+     *                       <code>SUBTRACTIVE_DITHER_1</code>.
      * 
-     * @param      value whether to treat values around 0.0 as special.
+     * @param      value (unused) value whether to treat values around 0.0 as special.
      * 
      * @return           itself
      * 
-     * @see              #isCheckZero()
+     * @see              #setDither2(boolean)
+     * @see              #isDither2()
      */
+    @Deprecated
     public QuantizeOption setCheckZero(boolean value) {
-        config.checkZero = value;
-        return this;
+        return setDither2(value);
     }
 
     /**
@@ -527,7 +561,10 @@ public class QuantizeOption implements ICompressOption {
     }
 
     /**
-     * Sets whether dithering is to use method 2.
+     * Sets whether dithering is to use method 2, when dithering is enabled. It does not actually enable or disable
+     * dithering itself -- for that you must call {@link #setDither(boolean)}. When dither method 2 is used, then 0.0
+     * values will be denoted with the special value −2147483647 in the quantized representation, whereas dither method
+     * 1 treats 0.0 just like any other decomal value.
      * 
      * @param  value <code>true</code> to use dither method 2, or else <code>false</code> for method 1.
      * 
@@ -537,7 +574,7 @@ public class QuantizeOption implements ICompressOption {
      * @see          #setDither(boolean)
      */
     public QuantizeOption setDither2(boolean value) {
-        config.dither2 = value;
+        config.checkZero = value;
         return this;
     }
 
@@ -602,21 +639,23 @@ public class QuantizeOption implements ICompressOption {
     }
 
     /**
-     * @deprecated       The use of null values other than <code>NaN</code> for floating-point data types is not
-     *                       standard in FITS. You should therefore avoid using this method to change it. Returns the
-     *                       floating-point value that indicates a <code>null</code> datum in the image before
-     *                       quantization is applied. Normally, the FITS standard is that NaN values indicate
-     *                       <code>null</code> values in floating-point images. While this class allows using other
-     *                       values also, they are not recommended since they are not supported by FITS in a standard
-     *                       way.
+     * Sets the floating-point value that indicates missing data in the floating point image image before quantization
+     * is applied. Normally, the FITS standard is that NaN values indicate <code>null</code> values in floating-point
+     * images. While this class allows using other values also, they are not recommended since they are not supported by
+     * FITS in a standard way.
      * 
      * @param      value the new floating-point value that represents a <code>null</code> value (missing data) in the
      *                       image before quantization.
      * 
      * @return           itself
      * 
-     * @see              #setNullValue(double)
+     * @see              #getNullValue()
+     * @see              #setBNull(Integer)
+     * 
+     * @deprecated       The use of null values other than <code>NaN</code> for floating-point data types is not
+     *                       standard in FITS. You should therefore avoid using this method, in general.
      */
+    @Deprecated
     public QuantizeOption setNullValue(double value) {
         nullValue = value;
         return this;
@@ -715,6 +754,158 @@ public class QuantizeOption implements ICompressOption {
     }
 
     /**
+     * Re-initialize the dither sequence.
+     */
+    void initDither() {
+        if (isDither() || isDither2()) {
+            iseed = (int) ((getSeed() + tileIndex - 1) % RandomSequence.length());
+            initI1();
+        }
+    }
+
+    private void initI1() {
+        nextRandom = (int) (RandomSequence.get(iseed) * RANDOM_MULTIPLICATOR);
+    }
+
+    private double nextDither() {
+        double d = RandomSequence.get(nextRandom) - DITHER_HALF;
+        nextRandom++;
+
+        if (nextRandom >= RandomSequence.length()) {
+            iseed = (iseed + 1) % RandomSequence.length();
+            initI1();
+        }
+
+        return d;
+    }
+
+    boolean isRegular(double x) {
+        if (!Double.isFinite(x)) {
+            return false;
+        }
+        if (x == nullValue) {
+            return false;
+        }
+        if (isCheckZero() && x == 0.0) {
+            return false;
+        }
+        return true;
+    }
+
+    /**
+     * Converts a floating point value to a quantized integer
+     * 
+     * @param  d a floating point value
+     * 
+     * @return   the equivalent quantized integer representation
+     * 
+     * @since    1.23
+     */
+    int toInt(double d) {
+        if (Double.isNaN(d) || d == nullValue) {
+            if (nullValueIndicator == null) {
+                nullValueIndicator = RECOMMENDED_NAN_INDICATOR;
+            }
+            return nullValueIndicator;
+        }
+
+        if (isDither() && isDither2() && d == 0.0) {
+            return DITHER2_ZERO_INDICATOR;
+        }
+
+        d -= bZero;
+        d /= bScale;
+        if (isDither()) {
+            d += nextDither();
+        }
+        return (int) Math.round(d);
+    }
+
+    /**
+     * Converts a quantized integer value back to it's floating-point equivalent
+     * 
+     * @param  i a quantized integer value
+     * 
+     * @return   the equivalent floating point value
+     * 
+     * @since    1.23
+     */
+    double toDouble(int i) {
+        if (isDither() && isDither2() && i == DITHER2_ZERO_INDICATOR) {
+            return 0.0;
+        }
+
+        if (nullValueIndicator != null && i == nullValueIndicator) {
+            return nullValue;
+        }
+
+        double d = i;
+        if (isDither()) {
+            d -= nextDither();
+        }
+
+        return useFMA ? Math.fma(d, bScale, bZero) : d * bScale + bZero;
+    }
+
+    void updateBZeroAndIntLimits() {
+        setBZero(findBZero());
+        setIntMinValue((int) Math.floor((minValue - bZero) / bScale));
+        setIntMaxValue((int) Math.ceil((maxValue - bZero) / bScale));
+    }
+
+    double findBZero() {
+        if (isCenterOnZero()) {
+            // Force ZZERO to be 0.0, as requested
+            return 0.0;
+        }
+
+        // return all positive values, if possible since some compression
+        // algorithms are more efficient that way.
+        if (Math.ceil((maxValue - minValue) / bScale) < Integer.MAX_VALUE) {
+            // fudge the zero point so it is an integer multiple of bScale
+            // This helps to ensure the same scaling will be performed if
+            // the file undergoes multiple fpack/funpack cycles
+            // AK: round to multiple of bScale.
+            double rem = Math.IEEEremainder(minValue, bScale);
+            if (rem < 0.0) {
+                rem += bScale;
+            }
+            return minValue - rem;
+        }
+
+        // center the quantized levels around zero
+        return (minValue + maxValue) / 2.;
+    }
+
+    /**
+     * Selects whether {@link Math#fma(double, double, double)} should be used when converting quantized integers back
+     * to doubles. Othwerwise normal arithmetic is used, which is the default. CFITSIO and astropy both rely on
+     * <code>fma()</code>, which has better precision, but is not supported on some (older) architectures. When hardware
+     * support is lacking, you may expect a significant performance hit from the software implementation.
+     * 
+     * @param value <code>true</code> to use <code>fma()</code>, or else <code>false</code> to use regular arithmetics.
+     * 
+     * @see         #isUseFMA()
+     * 
+     * @since       1.23
+     */
+    public static void useFMA(boolean value) {
+        useFMA = value;
+    }
+
+    /**
+     * Checks whether {@link Math#fma(double, double, double)} is used for converting quantized integers back to
+     * doubles.
+     * 
+     * @return <code>true</code> if using <code>fma()</code>, or else <code>false</code> is using regular arithmetics.
+     * 
+     * @since  1.23
+     */
+    public static final boolean isUseFMA() {
+        return useFMA;
+    }
+
+    /**
      * Stores configuration in a way that can be shared and modified across enclosing option copies.
      * 
      * @author Attila Kovacs
@@ -725,13 +916,11 @@ public class QuantizeOption implements ICompressOption {
 
         private boolean centerOnZero;
 
-        private boolean checkZero;
-
         private boolean dither;
 
-        private boolean dither2;
+        private boolean checkZero;
 
-        private double qlevel = Double.NaN;
+        private double qlevel = 4.0;
 
         private long seed = 1L;
     }

@@ -31,6 +31,9 @@
 
 package nom.tam.fits;
 
+import static nom.tam.fits.header.NonStandard.HIERARCH;
+import static nom.tam.fits.header.Standard.CONTINUE;
+
 import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.util.Locale;
@@ -39,11 +42,9 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.regex.Pattern;
 
+import nom.tam.fits.header.Standard;
 import nom.tam.util.ComplexValue;
 import nom.tam.util.FlexFormat;
-
-import static nom.tam.fits.header.NonStandard.HIERARCH;
-import static nom.tam.fits.header.Standard.CONTINUE;
 
 /**
  * <p>
@@ -365,9 +366,12 @@ class HeaderCardParser {
      * @see                           FitsFactory#setAllowHeaderRepairs(boolean)
      */
     private void parseValue() throws UnclosedQuoteException {
-        if (key.isEmpty() || !skipSpaces()) {
-            // nothing left to parse.
+        if (key.isEmpty() || key.equals(Standard.COMMENT.key()) || key.equals(Standard.HISTORY.key())) {
             return;
+        }
+
+        if (!skipSpaces()) {
+            return; // nothing left to parse.
         }
 
         if (CONTINUE.key().equals(key)) {
@@ -560,13 +564,25 @@ class HeaderCardParser {
     private static Class<? extends Number> getDecimalType(String value) {
         value = value.toUpperCase(Locale.US);
         boolean hasD = (value.indexOf('D') >= 0);
+        var old = value;
 
         if (hasD) {
             // Convert the Double Scientific Notation specified by FITS to pure IEEE.
             value = value.replace('D', 'E');
         }
 
-        BigDecimal big = new BigDecimal(value);
+        BigDecimal big = null;
+        try {
+            big = new BigDecimal(value);
+        } catch (NumberFormatException e) {
+            //todo replace with proper solution
+            if ("Exponent overflow.".equals(e.getMessage())) {
+                big = new BigDecimal(Double.longBitsToDouble(Long.parseUnsignedLong(old, 16)));
+                //IO.println("Exponent overflow. Using double value: " + big + " for " + old + " (IEEE 64-bit).");
+            } else {
+                throw e;
+            }
+        }
 
         // Check for zero, and deal with it separately...
         if (big.stripTrailingZeros().equals(BigDecimal.ZERO)) {

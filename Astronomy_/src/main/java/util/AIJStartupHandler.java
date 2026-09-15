@@ -5,6 +5,7 @@ import static Astronomy.MultiPlot_.useMacroTitle;
 
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
+import java.lang.management.ManagementFactory;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.ArrayList;
@@ -22,7 +23,9 @@ import astroj.AstroCanvas;
 import astroj.FreeformPixelApertureRoi;
 import astroj.IJU;
 import astroj.MeasurementTable;
+import astroj.Photometer;
 import astroj.ShapedApertureRoi;
+import com.sun.management.HotSpotDiagnosticMXBean;
 import ij.IJ;
 import ij.Prefs;
 import ij.astro.io.FitsReader;
@@ -33,6 +36,7 @@ import ij.astro.util.FitsExtensionUtil;
 import ij.astro.util.ObjectShare;
 import ij.plugin.FITS_Reader;
 import ij.plugin.PlugIn;
+import nom.tam.fits.compression.algorithm.quant.QuantizeOption;
 
 /**
  * Handle tasks on AIJ startup that need to reference code outside of the IJ package.
@@ -291,6 +295,20 @@ public class AIJStartupHandler implements PlugIn {
         ensureConfigFileExists();
         Executors.newSingleThreadExecutor()
                 .execute(() -> IJ.runPlugIn(AstroImageJUpdaterV6.class.getCanonicalName(), "check"));
+        // Automatically enable `nom.tam.fits.useFma` system property if JVM UseFMA is enabled.
+        // The JVM will automatically enable the UseFMA vm option if the cpu supports it.
+        // Not available on openj9
+        try {
+            var hotSpotDiagnostic = ManagementFactory.getPlatformMXBean(HotSpotDiagnosticMXBean.class);
+            var useFMAVMOption = hotSpotDiagnostic.getVMOption("UseFMA");
+            var useFma = Boolean.parseBoolean(useFMAVMOption.getValue());
+            QuantizeOption.useFMA(useFma);
+            Photometer.setUseFma(useFma);
+            IO.println((useFma ? "Enabled" : "Disabled") + " fma use.");
+        } catch (Throwable _) {
+            // Likely on a different runtime
+            IO.println("Failed to enable fma use.");
+        }
     }
 
     private void ensureConfigFileExists() {

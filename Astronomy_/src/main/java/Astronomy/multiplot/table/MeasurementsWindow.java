@@ -88,6 +88,7 @@ import ij.plugin.Distribution;
 import ij.plugin.FITS_Writer;
 import ij.plugin.filter.Analyzer;
 import ij.util.Java2;
+import ij.util.Tools;
 
 public class MeasurementsWindow extends JFrame implements ITableWindow {
     private final JTable jTable;
@@ -294,7 +295,10 @@ public class MeasurementsWindow extends JFrame implements ITableWindow {
 
                         // Needs to be sorted as we are removing rows in descending order
                         var idx = IntStream.range(0, table.size())
-                                .filter(row -> !Double.isFinite(table.getValueAsDouble(cIdx, row)))
+                                .filter(row ->
+                                        !Double.isFinite(table.getValueAsDouble(cIdx, row)) &&
+                                        (!table.isStringColumn(cIdx) || table.getStringValue(cIdx, row).equals("NaN"))
+                                )
                                 .sorted().toArray();
                         table.deleteRows(idx);
                         table.setLock(false);
@@ -355,6 +359,7 @@ public class MeasurementsWindow extends JFrame implements ITableWindow {
                             var column = getTable().getFreeColumn(heading);
                             if (column == COLUMN_IN_USE) {
                                 IJ.error("Column already exists");
+                                return;
                             }
 
                             var col = getTable().bulkGetColumnAsDoubles(column);
@@ -379,6 +384,7 @@ public class MeasurementsWindow extends JFrame implements ITableWindow {
                             var column = getTable().getColumnIndex(heading);
                             if (column != COLUMN_NOT_FOUND) {
                                 IJ.error("Column already exists");
+                                return;
                             }
 
                             getTable().renameColumn((String) c.getIdentifier(), heading);
@@ -622,7 +628,9 @@ public class MeasurementsWindow extends JFrame implements ITableWindow {
             case ROW_INSERTED -> tableView.fireTableRowsInserted(i1, i2);
             case ROW_UPDATED -> tableView.fireTableRowsUpdated(i1, i2);
             case CELL_UPDATED -> {
-                tableView.fireTableCellUpdated(i1, i2);
+                var viewColumn = jTable.convertColumnIndexToView(i2);
+                var viewRow = jTable.convertRowIndexToView(i1);
+                tableView.fireTableCellUpdated(viewRow, viewColumn);
                 adjustWidthOnRow(i1, i2);
             }
             case COL_ADDED -> {
@@ -655,7 +663,11 @@ public class MeasurementsWindow extends JFrame implements ITableWindow {
             return;
         }
 
-        TableColumn c = jTable.getColumnModel().getColumn(columnIndex);
+        var viewColumn = jTable.convertColumnIndexToView(columnIndex);
+        if (viewColumn < 0 || viewColumn >= jTable.getColumnModel().getColumnCount())
+            return;
+
+        TableColumn c = jTable.getColumnModel().getColumn(viewColumn);
 
         if (c == null) {
             return;
@@ -1170,7 +1182,7 @@ public class MeasurementsWindow extends JFrame implements ITableWindow {
         }
 
         @Override
-        public int getColumnCount() {//todo support string columns
+        public int getColumnCount() {
             if (table.getLastColumn() == -1) {
                 return 0;
             }
@@ -1185,7 +1197,11 @@ public class MeasurementsWindow extends JFrame implements ITableWindow {
             if (isRowNumCol(columnIndex)) {
                 return rowIndex+table.getBaseRowNumber();
             }
-            //table.getStringValue() //todo if double == nan, try get string. What to do with col. type? check first value? not safe
+
+            if (table.isStringColumn(offsetCol(columnIndex))) {
+                return table.getStringValue(offsetCol(columnIndex), rowIndex);
+            }
+
             return table.getValue(table.getColumnHeading(offsetCol(columnIndex)), rowIndex);
         }
 
@@ -1199,6 +1215,15 @@ public class MeasurementsWindow extends JFrame implements ITableWindow {
                     return;
                 }
             } else {
+                if (table.isStringColumn(offsetCol(columnIndex))) {
+                    var d = Tools.parseDouble(aValue.toString(), Double.NaN);
+                    if (Double.isNaN(d)) {
+                        table.setValue(offsetCol(columnIndex), rowIndex, aValue.toString());
+                    } else {
+                        table.setValue(offsetCol(columnIndex), rowIndex, d);
+                    }
+                    return;
+                }
                 if (aValue instanceof Number n) {
                     table.setValue(offsetCol(columnIndex), rowIndex, n.doubleValue());
                 } else {
@@ -1238,6 +1263,9 @@ public class MeasurementsWindow extends JFrame implements ITableWindow {
             }
             if (isRowNumCol(columnIndex)) {
                 return Integer.class;
+            }
+            if (table.isStringColumn(offsetCol(columnIndex))) {
+                return String.class;
             }
             return Double.class;
         }

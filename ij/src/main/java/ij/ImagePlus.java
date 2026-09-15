@@ -21,6 +21,7 @@ import java.awt.image.PixelGrabber;
 import java.util.Enumeration;
 import java.util.Properties;
 import java.util.Vector;
+import java.util.concurrent.atomic.AtomicInteger;
 
 import ij.astro.AstroImageJ;
 import ij.astro.util.VectorPlotDrawing;
@@ -140,7 +141,8 @@ public class ImagePlus implements ImageObserver, Measurements, Cloneable {
 	private int imageType = GRAY8;
 	private boolean typeSet;
 	private ImageStack stack;
-	private static int currentID = -1;
+	@AstroImageJ(reason = "Support multithreaded image opening", modified = true)
+	private static final AtomicInteger currentID = new AtomicInteger(-1);
 	private int ID;
 	private static Component comp;
 	private boolean imageLoaded;
@@ -229,14 +231,16 @@ public class ImagePlus implements ImageObserver, Measurements, Cloneable {
     	setID();
     }
 
+	@AstroImageJ(reason = "Support multithreaded image opening", modified = true)
     private void setID() {
-    	ID = --currentID;
+    	ID = currentID.decrementAndGet();
 	}
-	
+
+	@AstroImageJ(reason = "Support multithreaded image opening", modified = true)
 	public void setTemporary() {
 		if (!temporary) {
 			temporary = true;		
-			currentID++;
+			currentID.incrementAndGet();
 			ID = -Integer.MAX_VALUE;
 		}
 	}
@@ -702,7 +706,16 @@ public class ImagePlus implements ImageObserver, Measurements, Cloneable {
 	/** Returns a copy of this image as an 8-bit or RGB BufferedImage.
 	 * @see ij.process.ShortProcessor#get16BitBufferedImage
 	 */
+	@AstroImageJ(reason = "Support for Vectorized and Scaled plots", modified = true)
 	public BufferedImage getBufferedImage() {
+		if (getProperty(VectorPlotDrawing.PROPERTY_KEY)!=null) {
+			Plot plot = (Plot)(getProperty(VectorPlotDrawing.PROPERTY_KEY));
+			return plot.getBufferedImage(width, height);
+		}
+		if (stack instanceof PlotVirtualStack plotVirtualStack) {
+			var plot = plotVirtualStack.getPlot(currentSlice);
+			return plot.getBufferedImage(width, height);
+		}
 		if (isComposite())
 			return (new ColorProcessor(getImage())).getBufferedImage();
 		else

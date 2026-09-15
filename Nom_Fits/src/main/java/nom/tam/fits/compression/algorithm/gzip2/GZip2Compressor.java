@@ -45,8 +45,6 @@ import java.util.zip.GZIPOutputStream;
 import nom.tam.fits.compression.algorithm.gzip.GZipCompressor;
 import nom.tam.util.type.ElementType;
 
-import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
-
 /**
  * (<i>for internal use</i>) The GZIP2 compression algorithm.
  *
@@ -162,7 +160,6 @@ public abstract class GZip2Compressor<T extends Buffer> extends GZipCompressor<T
     }
 
     @Override
-    @SuppressFBWarnings(value = "RCN_REDUNDANT_NULLCHECK_WOULD_HAVE_BEEN_A_NPE", justification = "what null check is FB even referring to?")
     public boolean compress(T pixelData, ByteBuffer compressed) {
         int pixelDataLimit = pixelData.limit();
         byte[] pixelBytes = new byte[pixelDataLimit * primitiveSize];
@@ -182,13 +179,9 @@ public abstract class GZip2Compressor<T extends Buffer> extends GZipCompressor<T
         int pixelDataLimit = pixelData.limit();
         byte[] pixelBytes = new byte[pixelDataLimit * primitiveSize];
         try (GZIPInputStream zip = createGZipInputStream(compressed)) {
-            int count = 0;
-            int offset = 0;
-            while (offset < pixelBytes.length && count >= 0) {
-                count = zip.read(pixelBytes, offset, pixelBytes.length - offset);
-                if (count >= 0) {
-                    offset = offset + count;
-                }
+            int len = 0, nRead = 0;
+            while ((nRead = zip.read(pixelBytes, len, pixelBytes.length - len)) > 0) {
+                len += nRead;
             }
         } catch (IOException e) {
             throw new IllegalStateException("could not gunzip data", e);

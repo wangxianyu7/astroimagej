@@ -31,12 +31,12 @@ package nom.tam.fits.compression.provider.param.base;
  * #L%
  */
 
+import java.util.ArrayList;
+
 import nom.tam.fits.compression.algorithm.api.ICompressOption;
 import nom.tam.fits.compression.provider.param.api.ICompressColumnParameter;
 import nom.tam.fits.compression.provider.param.api.ICompressHeaderParameter;
 import nom.tam.fits.compression.provider.param.api.ICompressParameters;
-
-import java.util.ArrayList;
 
 /**
  * (<i>for internal use</i>) Compression parameters that are bundled together from distinct sets of component
@@ -120,6 +120,33 @@ public class BundledParameters extends CompressParameters {
         ArrayList<ICompressHeaderParameter> list = new ArrayList<>();
         for (ICompressParameters parms : bundle) {
             for (ICompressHeaderParameter p : ((CompressParameters) parms).headerParameters()) {
+                list.add(p);
+            }
+        }
+
+        ICompressHeaderParameter[] array = new ICompressHeaderParameter[list.size()];
+        return list.toArray(array);
+    }
+
+    @Override
+    protected ICompressColumnParameter[] activeColumnParameters() {
+        ArrayList<ICompressColumnParameter> list = new ArrayList<>();
+
+        for (ICompressParameters parms : bundle) {
+            for (ICompressColumnParameter p : ((CompressParameters) parms).activeColumnParameters()) {
+                list.add(p);
+            }
+        }
+
+        ICompressColumnParameter[] array = new ICompressColumnParameter[list.size()];
+        return list.toArray(array);
+    }
+
+    @Override
+    protected ICompressHeaderParameter[] activeHeaderParameters() {
+        ArrayList<ICompressHeaderParameter> list = new ArrayList<>();
+        for (ICompressParameters parms : bundle) {
+            for (ICompressHeaderParameter p : ((CompressParameters) parms).activeHeaderParameters()) {
                 list.add(p);
             }
         }

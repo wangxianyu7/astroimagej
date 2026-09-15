@@ -5,6 +5,8 @@ plugins {
 
 dependencies {
 	implementation(project(":ij"))
+    compileOnly("com.google.auto.service:auto-service:1.1.1")
+    annotationProcessor("com.google.auto.service:auto-service:1.1.1")
 }
 
 artifacts {
@@ -17,7 +19,7 @@ tasks.jar {
 
 testing {
     suites {
-        val test by getting(JvmTestSuite::class) {
+        val test = getByName<JvmTestSuite>("test") {
             useJUnitJupiter()
         }
 

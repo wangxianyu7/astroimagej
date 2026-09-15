@@ -44,6 +44,7 @@ public final class ZBlankColumnParameter extends CompressColumnParameter<int[], 
      * @deprecated (<i>for internal use</i>) the visibility of this constructor may be reduced to the package level in
      *                 future releases.
      */
+    @Deprecated
     @SuppressWarnings("javadoc")
     public ZBlankColumnParameter(QuantizeOption quantizeOption) {
         super(Compression.ZBLANK_COLUMN, quantizeOption, int[].class);
@@ -51,27 +52,44 @@ public final class ZBlankColumnParameter extends CompressColumnParameter<int[], 
 
     @Override
     public void getValueFromColumn(int index) {
-        if (getOption().isCheckNull()) {
-            int[] col = getColumnData();
-            if (col != null) {
-                getOption().setBNull(col[index]);
-                return;
-            }
+        int[] col = getColumnData();
+        if (col != null) {
+            getOption().setBNull(col[index]);
         }
-        getOption().setBNull(null);
     }
 
     @Override
-    public void setValueInColumn(int index) {
-        Integer blankValue = Integer.MIN_VALUE;
-
-        if (getOption().getBNull() != null) {
-            blankValue = getOption().getBNull();
-        }
-
+    public void setValueInColumn(int index) throws IndexOutOfBoundsException {
         int[] col = getColumnData();
         if (col != null) {
-            col[index] = blankValue;
+            Integer blankValue = getOption().getBNull();
+            col[index] = blankValue == null ? getInitValue() : blankValue;
         }
+    }
+
+    /**
+     * Checks if the column entries are all the same.
+     * 
+     * @return <code>true</code> if the entries in the column are all identical. Otherwise <code>false</code> if the
+     *             entries vary.
+     * 
+     * @since  1.23
+     */
+    boolean isUniform() {
+        int[] col = getColumnData();
+        if (col != null) {
+            int value = col[0];
+            for (int entry : col) {
+                if (entry != value) {
+                    return false;
+                }
+            }
+        }
+        return true;
+    }
+
+    @Override
+    protected Integer getInitValue() {
+        return QuantizeOption.RECOMMENDED_NAN_INDICATOR;
     }
 }

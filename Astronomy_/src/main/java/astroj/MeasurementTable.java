@@ -557,6 +557,17 @@ public class MeasurementTable extends ResultsTable {
     }
 
     @Override
+    public void setValue(int column, int row, String value) {
+        var newColNeeded = column > getLastColumn();
+        super.setValue(column, row, value);
+        if (newColNeeded) {
+            headingsCache.put(getColumnHeading(getLastColumn()), getLastColumn());
+            updateViewSynced(UpdateEvent.COL_ADDED, getLastColumn(), getLastColumn());
+        }
+        updateView(UpdateEvent.CELL_UPDATED, row, column);
+    }
+
+    @Override
     public void setValue(int column, int row, double value) {
         var newColNeeded = column > getLastColumn();
         super.setValue(column, row, value);
@@ -1081,18 +1092,26 @@ public class MeasurementTable extends ResultsTable {
                 }
 
                 for (int col = (2 - shift); col < header.length - shift; col++) {
+                    var blank = false;
                     if (col >= words.length) {
                         d = Double.NaN;
+                        blank = true;
                     } else if (words[col] == null) {
                         d = Double.NaN;
+                        blank = true;
                     } else if (words[col].isBlank() || words[col].trim().equals("-")) {
                         d = Double.NaN;
+                        blank = true;
                     } else if (isHMS(words[col])) {
                         d = hms(words[col]);
                     } else {
                         d = Tools.parseDouble(words[col]);
                     }
-                    table.addValue(header[col + shift], d);
+                    if (Double.isNaN(d) && !blank) {
+                        table.addValue(header[col + shift], words[col]);
+                    } else {
+                        table.addValue(header[col + shift], d);
+                    }
                 }
                 row++;
             }

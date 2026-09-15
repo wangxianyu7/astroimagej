@@ -44,7 +44,7 @@ plugins {
 
     id("aij.java-reproducible-builds")
 
-    id("dev.sigstore.sign-base") version "2.1.0"
+    id("dev.sigstore.sign-base") version "2.3.0"
 }
 
 repositories {
@@ -54,16 +54,16 @@ repositories {
 // See https://guides.gradle.org/creating-multi-project-builds/
 
 // Java version to compile and package with
-val shippingJava = (properties["javaShippingVersion"] as String).toInt()
+val shippingJava: Int = providers.gradleProperty("javaShippingVersion").map { it.toInt() }.get()
 // Minimum Java version binaries should be compatible with
-val targetJava = (properties["minJava"] as String).toInt()
+val targetJava: Int = providers.gradleProperty("minJava").map { it.toInt() }.get()
 
-val shippingIJ: Configuration by configurations.creating {
+val shippingIJ = configurations.create("shippingIJ") {
     isCanBeConsumed = false
     isCanBeResolved = true
 }
 
-val shippingAstro: Configuration by configurations.creating {
+val shippingAstro = configurations.create("shippingAstro") {
     isCanBeConsumed = false
     isCanBeResolved = true
 }
@@ -337,6 +337,7 @@ tasks.register<JavaExec>("aijRun") {
     // Force it to use the toolchain java version
     javaLauncher.set(javaToolchains.launcherFor {
         languageVersion.set(JavaLanguageVersion.of(shippingJava))
+        vendor.set(JvmVendorSpec.ORACLE)
     })
 
     enableAssertions = true
@@ -861,10 +862,10 @@ javaRuntimeSystemsProperty.get().forEach { (_, sysInfo) ->
                 val p = when (sysInfo.os) {
                     LINUX -> "lib/app/ij.jar"
                     WINDOWS -> "app/ij.jar"
-                    MAC -> "Contents/app/ij.jar"
+                    MAC -> ""
                 }
                 val properDirectory = layout.projectDirectory.file("appImageLocation.txt").asFile.exists() &&
-                        outputDestination().toPath().resolve(p).toFile().exists()
+                        (sysInfo.os == com.astroimagej.meta.jdk.OperatingSystem.MAC || outputDestination().toPath().resolve(p).toFile().exists())
                 if (!properDirectory) {
                     logger.error("[copyAppImage] Was not given the correct path! Must be the absolute path to the folder containing ij.jar!")
                 }
@@ -882,8 +883,14 @@ javaRuntimeSystemsProperty.get().forEach { (_, sysInfo) ->
                 MAC -> "AstroImageJ.app"
             }
 
-            from(appImageDir.map { it.dir(appImageName) }) {
-                into("")
+            if (sysInfo.os == com.astroimagej.meta.jdk.OperatingSystem.MAC) {
+                from(appImageDir) {
+                    into("")
+                }
+            } else {
+                from(appImageDir.map { it.dir(appImageName) }) {
+                    into("")
+                }
             }
             into(destination)
 

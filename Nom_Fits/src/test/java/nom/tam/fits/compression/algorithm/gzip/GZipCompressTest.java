@@ -35,6 +35,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.io.RandomAccessFile;
+import java.nio.Buffer;
 import java.nio.BufferOverflowException;
 import java.nio.ByteBuffer;
 import java.nio.DoubleBuffer;
@@ -42,10 +43,9 @@ import java.nio.FloatBuffer;
 import java.nio.IntBuffer;
 import java.nio.LongBuffer;
 import java.nio.ShortBuffer;
+import java.util.Random;
+import java.util.zip.GZIPInputStream;
 import java.util.zip.GZIPOutputStream;
-
-import org.junit.Assert;
-import org.junit.Test;
 
 import nom.tam.fits.compression.algorithm.gzip.GZipCompressor.ByteGZipCompressor;
 import nom.tam.fits.compression.algorithm.gzip.GZipCompressor.DoubleGZipCompressor;
@@ -57,12 +57,16 @@ import nom.tam.util.ArrayFuncs;
 import nom.tam.util.ByteBufferInputStream;
 import nom.tam.util.ByteBufferOutputStream;
 import nom.tam.util.SafeClose;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Test;
 
+@SuppressWarnings({"javadoc", "deprecation"})
 public class GZipCompressTest {
 
-    @Test(expected = NullPointerException.class)
+    @Test
     public void testByteNullVariantCompress() throws Exception {
-        new ByteGZipCompressor() {
+
+        ByteGZipCompressor c = new ByteGZipCompressor() {
 
             @Override
             protected java.util.zip.GZIPInputStream createGZipInputStream(ByteBuffer buffer) throws java.io.IOException {
@@ -73,12 +77,15 @@ public class GZipCompressTest {
             protected GZIPOutputStream createGZipOutputStream(int length, ByteBuffer compressed) throws IOException {
                 return null;
             }
-        }.compress(ByteBuffer.wrap(new byte[10]), ByteBuffer.wrap(new byte[100]));
+        };
+
+        Assertions.assertThrows(NullPointerException.class,
+                () -> c.compress(ByteBuffer.wrap(new byte[10]), ByteBuffer.wrap(new byte[100])));
     }
 
-    @Test(expected = IllegalStateException.class)
+    @Test
     public void testByteCompressIOException() throws Exception {
-        new ByteGZipCompressor() {
+        ByteGZipCompressor c = new ByteGZipCompressor() {
 
             @Override
             protected GZIPOutputStream createGZipOutputStream(int length, ByteBuffer compressed) throws IOException {
@@ -90,12 +97,15 @@ public class GZipCompressTest {
                     }
                 };
             }
-        }.compress(ByteBuffer.wrap(new byte[10]), ByteBuffer.wrap(new byte[100]));
+        };
+
+        Assertions.assertThrows(IllegalStateException.class,
+                () -> c.compress(ByteBuffer.wrap(new byte[10]), ByteBuffer.wrap(new byte[100])));
     }
 
-    @Test(expected = IllegalStateException.class)
+    @Test
     public void testShortCompressIOException() throws Exception {
-        new ShortGZipCompressor() {
+        ShortGZipCompressor c = new ShortGZipCompressor() {
 
             @Override
             protected GZIPOutputStream createGZipOutputStream(int length, ByteBuffer compressed) throws IOException {
@@ -107,12 +117,15 @@ public class GZipCompressTest {
                     }
                 };
             }
-        }.compress(ByteBuffer.wrap(new byte[10]).asShortBuffer(), ByteBuffer.wrap(new byte[100]));
+        };
+
+        Assertions.assertThrows(IllegalStateException.class,
+                () -> c.compress(ByteBuffer.wrap(new byte[10]).asShortBuffer(), ByteBuffer.wrap(new byte[100])));
     }
 
-    @Test(expected = NullPointerException.class)
+    @Test
     public void testByteNullVariantDecompress() throws Exception {
-        new ByteGZipCompressor() {
+        ByteGZipCompressor c = new ByteGZipCompressor() {
 
             @Override
             protected java.util.zip.GZIPInputStream createGZipInputStream(ByteBuffer buffer) throws java.io.IOException {
@@ -123,24 +136,29 @@ public class GZipCompressTest {
             protected GZIPOutputStream createGZipOutputStream(int length, ByteBuffer compressed) throws IOException {
                 return null;
             }
-        }.decompress(ByteBuffer.wrap(new byte[10]), ByteBuffer.wrap(new byte[100]));
+        };
+
+        Assertions.assertThrows(NullPointerException.class,
+                () -> c.decompress(ByteBuffer.wrap(new byte[10]), ByteBuffer.wrap(new byte[100])));
     }
 
-    @Test(expected = BufferOverflowException.class)
+    @Test
     public void testByteGzipCompressFailures1() throws Exception {
         byte[] byteArray = new byte[100];
-        new ByteGZipCompressor().compress(ByteBuffer.wrap(byteArray), ByteBuffer.wrap(new byte[0]));
+        Assertions.assertThrows(BufferOverflowException.class,
+                () -> new ByteGZipCompressor().compress(ByteBuffer.wrap(byteArray), ByteBuffer.wrap(new byte[0])));
     }
 
-    @Test(expected = IllegalStateException.class)
+    @Test
     public void testByteGzipCompressFailures2() throws Exception {
         byte[] byteArray = new byte[100];
-        new ByteGZipCompressor().decompress(ByteBuffer.wrap(new byte[1]), ByteBuffer.wrap(byteArray));
+        Assertions.assertThrows(IllegalStateException.class,
+                () -> new ByteGZipCompressor().decompress(ByteBuffer.wrap(new byte[1]), ByteBuffer.wrap(byteArray)));
     }
 
-    @Test(expected = NullPointerException.class)
+    @Test
     public void testShortNullVariantCompress() throws Exception {
-        new ShortGZipCompressor() {
+        ShortGZipCompressor c = new ShortGZipCompressor() {
 
             @Override
             protected java.util.zip.GZIPInputStream createGZipInputStream(ByteBuffer buffer) throws java.io.IOException {
@@ -151,12 +169,15 @@ public class GZipCompressTest {
             protected GZIPOutputStream createGZipOutputStream(int length, ByteBuffer compressed) throws IOException {
                 return null;
             }
-        }.compress(ByteBuffer.wrap(new byte[16]).asShortBuffer(), ByteBuffer.wrap(new byte[100]));
+        };
+
+        Assertions.assertThrows(NullPointerException.class,
+                () -> c.compress(ByteBuffer.wrap(new byte[16]).asShortBuffer(), ByteBuffer.wrap(new byte[100])));
     }
 
-    @Test(expected = NullPointerException.class)
+    @Test
     public void testShortNullVariantDecompress() throws Exception {
-        new ShortGZipCompressor() {
+        ShortGZipCompressor c = new ShortGZipCompressor() {
 
             @Override
             protected java.util.zip.GZIPInputStream createGZipInputStream(ByteBuffer buffer) throws java.io.IOException {
@@ -167,19 +188,24 @@ public class GZipCompressTest {
             protected GZIPOutputStream createGZipOutputStream(int length, ByteBuffer compressed) throws IOException {
                 return null;
             }
-        }.decompress(ByteBuffer.wrap(new byte[16]), ByteBuffer.wrap(new byte[100]).asShortBuffer());
+        };
+
+        Assertions.assertThrows(NullPointerException.class,
+                () -> c.decompress(ByteBuffer.wrap(new byte[16]), ByteBuffer.wrap(new byte[100]).asShortBuffer()));
     }
 
-    @Test(expected = BufferOverflowException.class)
+    @Test
     public void testShortGzipCompressFailures1() throws Exception {
         byte[] byteArray = new byte[100];
-        new ShortGZipCompressor().compress(ByteBuffer.wrap(byteArray).asShortBuffer(), ByteBuffer.wrap(new byte[0]));
+        Assertions.assertThrows(BufferOverflowException.class, () -> new ShortGZipCompressor()
+                .compress(ByteBuffer.wrap(byteArray).asShortBuffer(), ByteBuffer.wrap(new byte[0])));
     }
 
-    @Test(expected = IllegalStateException.class)
+    @Test
     public void testShortGzipCompressFailures2() throws Exception {
         byte[] byteArray = new byte[100];
-        new ShortGZipCompressor().decompress(ByteBuffer.wrap(new byte[1]), ByteBuffer.wrap(byteArray).asShortBuffer());
+        Assertions.assertThrows(IllegalStateException.class, () -> new ShortGZipCompressor()
+                .decompress(ByteBuffer.wrap(new byte[1]), ByteBuffer.wrap(byteArray).asShortBuffer()));
     }
 
     @Test
@@ -191,18 +217,18 @@ public class GZipCompressTest {
             out = new ByteBufferOutputStream(ByteBuffer.wrap(array));
             out.write(expected[0]);
             out.write(expected, 1, 9);
-            Assert.assertArrayEquals(expected, array);
+            Assertions.assertArrayEquals(expected, array);
         } finally {
             SafeClose.close(out);
         }
         InputStream in = null;
         try {
             in = new ByteBufferInputStream(ByteBuffer.wrap(expected));
-            Assert.assertEquals(1, in.read());
+            Assertions.assertEquals(1, in.read());
             in.read(array, 1, 9);
-            Assert.assertArrayEquals(expected, array);
-            Assert.assertEquals(-1, in.read());
-            Assert.assertEquals(-1, in.read(array, 1, 9));
+            Assertions.assertArrayEquals(expected, array);
+            Assertions.assertEquals(-1, in.read());
+            Assertions.assertEquals(-1, in.read(array, 1, 9));
         } finally {
             SafeClose.close(in);
         }
@@ -230,17 +256,17 @@ public class GZipCompressTest {
             byte[] compressedArray = new byte[compressed.position()];
             compressed.position(0);
             compressed.get(compressedArray, 0, compressedArray.length);
-            // Assert.assertArrayEquals(expectedBytes, compressedArray);
+            // Assertions.assertArrayEquals(expectedBytes, compressedArray);
 
             byte[] decompressedBytes = new byte[bytes.length];
             ByteBuffer decompressedArray = ByteBuffer.wrap(decompressedBytes);
             new ByteGZipCompressor().decompress(ByteBuffer.wrap(expectedBytes), decompressedArray);
-            Assert.assertArrayEquals(bytes, decompressedBytes);
+            Assertions.assertArrayEquals(bytes, decompressedBytes);
 
             compressed.rewind();
             decompressedArray.rewind();
             new ByteGZipCompressor().decompress(compressed, decompressedArray);
-            Assert.assertArrayEquals(bytes, decompressedBytes);
+            Assertions.assertArrayEquals(bytes, decompressedBytes);
         } finally {
             SafeClose.close(expected);
             SafeClose.close(file);
@@ -269,17 +295,17 @@ public class GZipCompressTest {
             byte[] compressedArray = new byte[compressed.position()];
             compressed.position(0);
             compressed.get(compressedArray, 0, compressedArray.length);
-            // Assert.assertArrayEquals(expectedBytes, compressedArray);
+            // Assertions.assertArrayEquals(expectedBytes, compressedArray);
 
             byte[] decompressedBytes = new byte[bytes.length];
             ShortBuffer decompressedArray = ByteBuffer.wrap(decompressedBytes).asShortBuffer();
             new ShortGZipCompressor().decompress(ByteBuffer.wrap(expectedBytes), decompressedArray);
-            Assert.assertArrayEquals(bytes, decompressedBytes);
+            Assertions.assertArrayEquals(bytes, decompressedBytes);
 
             compressed.rewind();
             decompressedArray.rewind();
             new ShortGZipCompressor().decompress(compressed, decompressedArray);
-            Assert.assertArrayEquals(bytes, decompressedBytes);
+            Assertions.assertArrayEquals(bytes, decompressedBytes);
         } finally {
             SafeClose.close(expected);
             SafeClose.close(file);
@@ -308,17 +334,17 @@ public class GZipCompressTest {
             byte[] compressedArray = new byte[compressed.position()];
             compressed.position(0);
             compressed.get(compressedArray, 0, compressedArray.length);
-            // Assert.assertArrayEquals(expectedBytes, compressedArray);
+            // Assertions.assertArrayEquals(expectedBytes, compressedArray);
 
             byte[] decompressedBytes = new byte[bytes.length];
             IntBuffer decompressedArray = ByteBuffer.wrap(decompressedBytes).asIntBuffer();
             new IntGZipCompressor().decompress(ByteBuffer.wrap(expectedBytes), decompressedArray);
-            Assert.assertArrayEquals(bytes, decompressedBytes);
+            Assertions.assertArrayEquals(bytes, decompressedBytes);
 
             compressed.rewind();
             decompressedArray.rewind();
             new IntGZipCompressor().decompress(compressed, decompressedArray);
-            Assert.assertArrayEquals(bytes, decompressedBytes);
+            Assertions.assertArrayEquals(bytes, decompressedBytes);
         } finally {
             SafeClose.close(expected);
             SafeClose.close(file);
@@ -349,7 +375,7 @@ public class GZipCompressTest {
             LongBuffer decompressedArray = LongBuffer.wrap(new long[longArray.length]);
 
             new LongGZipCompressor().decompress(compressed, decompressedArray);
-            Assert.assertArrayEquals(longArray, decompressedArray.array());
+            Assertions.assertArrayEquals(longArray, decompressedArray.array());
         } finally {
             SafeClose.close(file);
         }
@@ -379,7 +405,7 @@ public class GZipCompressTest {
             FloatBuffer decompressedArray = FloatBuffer.wrap(new float[floatArray.length]);
 
             new FloatGZipCompressor().decompress(compressed, decompressedArray);
-            Assert.assertArrayEquals(floatArray, decompressedArray.array(), 0.0000001f);
+            Assertions.assertArrayEquals(floatArray, decompressedArray.array(), 0.0000001f);
         } finally {
             SafeClose.close(file);
         }
@@ -409,9 +435,195 @@ public class GZipCompressTest {
             DoubleBuffer decompressedArray = DoubleBuffer.wrap(new double[doubleArray.length]);
 
             new DoubleGZipCompressor().decompress(compressed, decompressedArray);
-            Assert.assertArrayEquals(doubleArray, decompressedArray.array(), 0.0000001);
+            Assertions.assertArrayEquals(doubleArray, decompressedArray.array(), 0.0000001);
         } finally {
             SafeClose.close(file);
         }
+    }
+
+    /**
+     * A chunk size that is not a multiple of 2, 4 or 8, so that every read but the last ends in the middle of a
+     * multi-byte element.
+     */
+    private static final int MISALIGNED_CHUNK_SIZE = 1023;
+
+    /**
+     * Enough elements that the decompressed data spans several internal buffers, as it does for the tiles of a real
+     * tile-compressed image.
+     */
+    private static final int LARGE_ELEMENT_COUNT = 30000;
+
+    /**
+     * Wraps a gzip stream so that no read returns more than {@link #MISALIGNED_CHUNK_SIZE} bytes.
+     * {@link GZIPInputStream} makes no promise about returning a whole number of elements, and does return awkward
+     * counts in practice once the data spans more than one internal buffer.
+     */
+    private static GZIPInputStream misalignedChunks(ByteBuffer compressed) throws IOException {
+        return new GZIPInputStream(new ByteBufferInputStream(compressed), 65536) {
+
+            @Override
+            public int read(byte[] b, int off, int len) throws IOException {
+                return super.read(b, off, Math.min(len, MISALIGNED_CHUNK_SIZE));
+            }
+        };
+    }
+
+    private static <T extends Buffer> ByteBuffer gzip(GZipCompressor<T> compressor, T data, int rawByteCount) {
+        ByteBuffer compressed = ByteBuffer.wrap(new byte[rawByteCount + 1024]);
+        compressor.compress(data, compressed);
+        compressed.rewind();
+        return compressed;
+    }
+
+    @Test
+    public void testGzipDecompressMisalignedChunksByte() throws Exception {
+        byte[] expected = new byte[LARGE_ELEMENT_COUNT];
+        new Random(42).nextBytes(expected);
+
+        ByteBuffer compressed = gzip(new ByteGZipCompressor(), ByteBuffer.wrap(expected), expected.length);
+
+        byte[] actual = new byte[expected.length];
+        new ByteGZipCompressor() {
+
+            @Override
+            protected GZIPInputStream createGZipInputStream(ByteBuffer c) throws IOException {
+                return misalignedChunks(c);
+            }
+        }.decompress(compressed, ByteBuffer.wrap(actual));
+
+        Assertions.assertArrayEquals(expected, actual);
+    }
+
+    @Test
+    public void testGzipDecompressMisalignedChunksShort() throws Exception {
+        Random random = new Random(42);
+        short[] expected = new short[LARGE_ELEMENT_COUNT];
+        for (int i = 0; i < expected.length; i++) {
+            expected[i] = (short) random.nextInt();
+        }
+
+        ByteBuffer compressed = gzip(new ShortGZipCompressor(), ShortBuffer.wrap(expected), expected.length * 2);
+
+        short[] actual = new short[expected.length];
+        new ShortGZipCompressor() {
+
+            @Override
+            protected GZIPInputStream createGZipInputStream(ByteBuffer c) throws IOException {
+                return misalignedChunks(c);
+            }
+        }.decompress(compressed, ShortBuffer.wrap(actual));
+
+        Assertions.assertArrayEquals(expected, actual);
+    }
+
+    @Test
+    public void testGzipDecompressMisalignedChunksInt() throws Exception {
+        Random random = new Random(42);
+        int[] expected = new int[LARGE_ELEMENT_COUNT];
+        for (int i = 0; i < expected.length; i++) {
+            expected[i] = random.nextInt();
+        }
+
+        ByteBuffer compressed = gzip(new IntGZipCompressor(), IntBuffer.wrap(expected), expected.length * 4);
+
+        int[] actual = new int[expected.length];
+        new IntGZipCompressor() {
+
+            @Override
+            protected GZIPInputStream createGZipInputStream(ByteBuffer c) throws IOException {
+                return misalignedChunks(c);
+            }
+        }.decompress(compressed, IntBuffer.wrap(actual));
+
+        Assertions.assertArrayEquals(expected, actual);
+    }
+
+    @Test
+    public void testGzipDecompressMisalignedChunksLong() throws Exception {
+        Random random = new Random(42);
+        long[] expected = new long[LARGE_ELEMENT_COUNT];
+        for (int i = 0; i < expected.length; i++) {
+            expected[i] = random.nextLong();
+        }
+
+        ByteBuffer compressed = gzip(new LongGZipCompressor(), LongBuffer.wrap(expected), expected.length * 8);
+
+        long[] actual = new long[expected.length];
+        new LongGZipCompressor() {
+
+            @Override
+            protected GZIPInputStream createGZipInputStream(ByteBuffer c) throws IOException {
+                return misalignedChunks(c);
+            }
+        }.decompress(compressed, LongBuffer.wrap(actual));
+
+        Assertions.assertArrayEquals(expected, actual);
+    }
+
+    @Test
+    public void testGzipDecompressMisalignedChunksFloat() throws Exception {
+        Random random = new Random(42);
+        float[] expected = new float[LARGE_ELEMENT_COUNT];
+        for (int i = 0; i < expected.length; i++) {
+            expected[i] = Float.intBitsToFloat(random.nextInt());
+        }
+
+        ByteBuffer compressed = gzip(new FloatGZipCompressor(), FloatBuffer.wrap(expected), expected.length * 4);
+
+        float[] actual = new float[expected.length];
+        new FloatGZipCompressor() {
+
+            @Override
+            protected GZIPInputStream createGZipInputStream(ByteBuffer c) throws IOException {
+                return misalignedChunks(c);
+            }
+        }.decompress(compressed, FloatBuffer.wrap(actual));
+
+        // Compared as bits, since the random patterns include NaNs.
+        for (int i = 0; i < expected.length; i++) {
+            Assertions.assertEquals(Float.floatToRawIntBits(expected[i]), Float.floatToRawIntBits(actual[i]),
+                    "pixel " + i);
+        }
+    }
+
+    @Test
+    public void testGzipDecompressMisalignedChunksDouble() throws Exception {
+        Random random = new Random(42);
+        double[] expected = new double[LARGE_ELEMENT_COUNT];
+        for (int i = 0; i < expected.length; i++) {
+            expected[i] = Double.longBitsToDouble(random.nextLong());
+        }
+
+        ByteBuffer compressed = gzip(new DoubleGZipCompressor(), DoubleBuffer.wrap(expected), expected.length * 8);
+
+        double[] actual = new double[expected.length];
+        new DoubleGZipCompressor() {
+
+            @Override
+            protected GZIPInputStream createGZipInputStream(ByteBuffer c) throws IOException {
+                return misalignedChunks(c);
+            }
+        }.decompress(compressed, DoubleBuffer.wrap(actual));
+
+        for (int i = 0; i < expected.length; i++) {
+            Assertions.assertEquals(Double.doubleToRawLongBits(expected[i]), Double.doubleToRawLongBits(actual[i]),
+                    "pixel " + i);
+        }
+    }
+
+    @Test
+    public void testGzipRoundTripLargerThanInternalBuffer() throws Exception {
+        Random random = new Random(1234);
+        float[] expected = new float[LARGE_ELEMENT_COUNT];
+        for (int i = 0; i < expected.length; i++) {
+            expected[i] = random.nextFloat() * 1000.0f;
+        }
+
+        ByteBuffer compressed = gzip(new FloatGZipCompressor(), FloatBuffer.wrap(expected), expected.length * 4);
+
+        float[] actual = new float[expected.length];
+        new FloatGZipCompressor().decompress(compressed, FloatBuffer.wrap(actual));
+
+        Assertions.assertArrayEquals(expected, actual, 0.0f);
     }
 }
