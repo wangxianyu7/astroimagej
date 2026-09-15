@@ -6,9 +6,9 @@
 
 | 文件 | 角色 |
 |---|---|
-| `Astronomy_/src/main/java/astroj/I18n.java` | 静态 ResourceBundle 加载器 + `I18n.t(key)` |
-| `Astronomy_/src/main/resources/messages.properties` | 英文默认值(所有 key 都要有) |
-| `Astronomy_/src/main/resources/messages_zh_CN.properties` | 简体中文翻译 |
+| `ij/src/main/java/ij/I18n.java` | 静态 ResourceBundle 加载器 + `I18n.t(key)`(包名 `ij`) |
+| `ij/src/main/resources/messages.properties` | 英文默认值(所有 key 都要有) |
+| `ij/src/main/resources/messages_zh_CN.properties` | 简体中文翻译 |
 | `messages_zh_TW.properties`(可建) | 繁体中文 |
 
 ## 切换语言
@@ -71,7 +71,7 @@ gd.addCheckbox("Use RA/Dec to locate aperture positions", useWCS, ...);
 gd.addCheckbox(I18n.t("multiap.use_radec"), useWCS, ...);
 ```
 
-如果 `import astroj.I18n;` 不在文件顶部,自己加一行(Astronomy_ 模块内可直接 import,因为同模块)。
+如果 `import ij.I18n;` 不在文件顶部,自己加一行。`I18n` 在 `ij` 模块;`Astronomy_` 依赖 `ij`,所以两个模块的 `.java` 都能直接 `import ij.I18n;`(`ij` 包内的文件若已 `import ij.*;` 则无需再加)。
 
 ### 带参数的字符串
 
@@ -103,7 +103,7 @@ IJ.log(I18n.t("status.found_n_stars", n, median));
 
 ## 验证流程
 
-1. 改完 .java 和 .properties 后,跑 `./gradlew :Astronomy_:compileJava` 验证语法
+1. 改完 .java 和 .properties 后,跑 `./gradlew :ij:compileJava :Astronomy_:compileJava` 验证语法
 2. 跑 `./gradlew aijRun` 启动 AIJ,检查中文是否正确显示
 3. 不加 `-Daij.lang=zh_CN` 再跑一遍,确认英文界面没变(向后兼容)
 
