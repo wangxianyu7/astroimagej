@@ -33,6 +33,7 @@ import java.util.TimerTask;
 
 import javax.imageio.ImageIO;
 
+import ij.I18n;
 import ij.IJ;
 import ij.IJEventListener;
 import ij.ImageJ;
@@ -654,71 +655,78 @@ public class Toolbar extends Canvas implements MouseListener, MouseMotionListene
 				if (index!=-1)
 					name = name.substring(0, index+4);
 			}
-			IJ.showStatus(name);
+			// Macro-tool name might have an i18n translation under key "tool.<name>".
+			// We strip a trailing " Tool" suffix for the lookup so that
+			//   names[tool] = "Astronomy_Tool Tool"  matches key  "tool.Astronomy_Tool"
+			// If no translation is found, fall back to the original English name.
+			String shortName = name.endsWith(" Tool") ? name.substring(0, name.length() - 5) : name;
+			String key = "tool." + shortName;
+			String localized = I18n.t(key);
+			IJ.showStatus(localized.equals(key) ? name : localized);
 			return;
 		}
-		String hint = " (alt or long click to switch)";
-		String hint2 = " (alt or long click to switch; double click to configure)";
+		String hint = I18n.t("toolbar.hint.switch");
+		String hint2 = I18n.t("toolbar.hint.switch_cfg");
 		switch (tool) {
 			case RECTANGLE:
 				if (rectType==ROUNDED_RECT_ROI)
-					IJ.showStatus("Rectangle, *rounded rect* or rotated rect"+hint);
+					IJ.showStatus(I18n.t("toolbar.rect.rounded")+hint);
 				else if (rectType==ROTATED_RECT_ROI)
-					IJ.showStatus("Rectangle, rounded rect or *rotated rect*"+hint);
+					IJ.showStatus(I18n.t("toolbar.rect.rotated")+hint);
 				else
-					IJ.showStatus("*Rectangle*, rounded rect or rotated rect"+hint);
+					IJ.showStatus(I18n.t("toolbar.rect.normal")+hint);
 				return;
 			case OVAL:
 				if (ovalType==BRUSH_ROI)
-					IJ.showStatus("Oval, elliptical or *brush* selections"+hint);
+					IJ.showStatus(I18n.t("toolbar.oval.brush")+hint);
 				else if (ovalType==ELLIPSE_ROI)
-					IJ.showStatus("Oval, *elliptical* or brush selections"+hint);
+					IJ.showStatus(I18n.t("toolbar.oval.ellipse")+hint);
 				else
-					IJ.showStatus("*Oval*, elliptical or brush selections"+hint);
+					IJ.showStatus(I18n.t("toolbar.oval.normal")+hint);
 				return;
 			case POLYGON:
-				IJ.showStatus("Polygon selections");
+				IJ.showStatus(I18n.t("toolbar.polygon"));
 				return;
 			case FREEROI:
-				IJ.showStatus("Freehand selections");
+				IJ.showStatus(I18n.t("toolbar.freeroi"));
 				return;
 			case LINE:
 				if (arrowMode)
-					IJ.showStatus("Straight, segmented or freehand lines, or *arrows*"+hint);
+					IJ.showStatus(I18n.t("toolbar.line.arrows")+hint);
 				else
-					IJ.showStatus("*Straight*, segmented or freehand lines, or arrows"+hint);
+					IJ.showStatus(I18n.t("toolbar.line.straight")+hint);
 				return;
 			case POLYLINE:
-				IJ.showStatus("Straight, *segmented* or freehand lines, or arrows"+hint);
+				IJ.showStatus(I18n.t("toolbar.line.segmented")+hint);
 				return;
 			case FREELINE:
-				IJ.showStatus("Straight, segmented or *freehand* lines, or arrows"+hint);
+				IJ.showStatus(I18n.t("toolbar.line.freehand")+hint);
 				return;
 			case POINT:
 				if (multiPointMode)
-					IJ.showStatus("*Multi-point* or point"+hint2);
+					IJ.showStatus(I18n.t("toolbar.multipoint")+hint2);
 				else
-					IJ.showStatus("*Point* or multi-point"+hint2);
+					IJ.showStatus(I18n.t("toolbar.point")+hint2);
 				return;
 			case WAND:
-				IJ.showStatus("Wand (tracing) tool");
+				IJ.showStatus(I18n.t("toolbar.wand"));
 				return;
 			case TEXT:
-				IJ.showStatus("Text tool (double-click to configure)");
+				IJ.showStatus(I18n.t("toolbar.text"));
 				return;
 			case MAGNIFIER:
-				IJ.showStatus("Magnifying glass (or \"+\" and \"-\" keys; alt or long click for menu)");
+				IJ.showStatus(I18n.t("toolbar.magnifier"));
 				return;
 			case HAND:
-				IJ.showStatus("Scrolling tool (or press space bar and drag)");
+				IJ.showStatus(I18n.t("toolbar.hand"));
 				return;
 			case DROPPER:
 				String fg = foregroundColor.getRed() + "," + foregroundColor.getGreen() + "," + foregroundColor.getBlue();
 				String bg = backgroundColor.getRed() + "," + backgroundColor.getGreen() + "," + backgroundColor.getBlue();
-				IJ.showStatus("Color picker " +  fg + "/"+ bg + " (alt or long click for menu)");
+				IJ.showStatus(I18n.t("toolbar.color", fg, bg));
 				return;
 			case ANGLE:
-				IJ.showStatus("Angle tool");
+				IJ.showStatus(I18n.t("toolbar.angle"));
 				return;
 			default:
 				IJ.showStatus("ImageJ "+IJ.getVersion()+" / Java "+System.getProperty("java.version")+(IJ.is64Bit()?" (64-bit)":" (32-bit)"));

@@ -82,6 +82,7 @@ import astroj.AstroStackWindow;
 import astroj.Centroid;
 import astroj.FitsJ;
 import astroj.FreeformPixelApertureRoi;
+import ij.I18n;
 import astroj.IJU;
 import astroj.MarkingRoi;
 import astroj.MeasurementTable;
@@ -6146,35 +6147,35 @@ public class MultiAperture_ extends Aperture_ implements MouseListener, MouseMot
             yLocation = 10;
         }
 
-        GenericSwingDialog gd = new GenericSwingDialog("Multi-Aperture Measurements", xLocation, yLocation);
+        GenericSwingDialog gd = new GenericSwingDialog(I18n.t("multiap.title"), xLocation, yLocation);
         gd.setSaveAndUseStepSize(true);
 
         var sliders = new JPanel[12];
-        gd.addSwappableSection("Aperture Shape:", apertureShape, (g, shape) -> {
+        gd.addSwappableSection(I18n.t("multiap.aperture_shape"), apertureShape, (g, shape) -> {
             switch (shape) {
                 case CIRCULAR -> {
                     g.buildColumn((g2, col) -> {
                         if (stackSize > 1) {
                             firstSlice = (firstSlice == stackSize || (alwaysstartatfirstSlice && !(this instanceof Stack_Aligner))) ? 1 : firstSlice;
-                            sliders[0] = g.addSlider("First slice", 1, stackSize, firstSlice, d -> firstSlice = d.intValue());
-                            sliders[1] = g.addSlider("Last slice", 1, stackSize, lastSlice, d -> lastSlice = d.intValue());
+                            sliders[0] = g.addSlider(I18n.t("multiap.first_slice"), 1, stackSize, firstSlice, d -> firstSlice = d.intValue());
+                            sliders[1] = g.addSlider(I18n.t("multiap.last_slice"), 1, stackSize, lastSlice, d -> lastSlice = d.intValue());
                         }
-                        sliders[2] = g.addFloatSlider("Fixed/Base radius of photometric aperture", 0.01, radius > 100 ? radius : 100, false, radius, 3, 1.0, d -> radius = d);
-                        sliders[3] = g.addFloatSlider("Fixed/Base radius of inner background annulus", 0.01, rBack1 > 100 ? rBack1 : 100, false, rBack1, 3, 1.0, d -> rBack1 = d);
-                        sliders[4] = g.addFloatSlider("Fixed/Base radius of outer background annulus", 0.01, rBack2 > 100 ? rBack2 : 100, false, rBack2, 3, 1.0, d -> rBack2 = d);
+                        sliders[2] = g.addFloatSlider(I18n.t("multiap.radius_phot"), 0.01, radius > 100 ? radius : 100, false, radius, 3, 1.0, d -> radius = d);
+                        sliders[3] = g.addFloatSlider(I18n.t("multiap.radius_inner_bg"), 0.01, rBack1 > 100 ? rBack1 : 100, false, rBack1, 3, 1.0, d -> rBack1 = d);
+                        sliders[4] = g.addFloatSlider(I18n.t("multiap.radius_outer_bg"), 0.01, rBack2 > 100 ? rBack2 : 100, false, rBack2, 3, 1.0, d -> rBack2 = d);
                     });
                 }
                 case ELLIPTICAL -> {
                     g.buildColumn((g2, col) -> {
                         if (stackSize > 1) {
                             firstSlice = (firstSlice == stackSize || (alwaysstartatfirstSlice && !(this instanceof Stack_Aligner))) ? 1 : firstSlice;
-                            sliders[7] = g.addSlider("First slice", 1, stackSize, firstSlice, d -> firstSlice = d.intValue());
-                            sliders[8] = g.addSlider("Last slice", 1, stackSize, lastSlice, d -> lastSlice = d.intValue());
+                            sliders[7] = g.addSlider(I18n.t("multiap.first_slice"), 1, stackSize, firstSlice, d -> firstSlice = d.intValue());
+                            sliders[8] = g.addSlider(I18n.t("multiap.last_slice"), 1, stackSize, lastSlice, d -> lastSlice = d.intValue());
                         }
 
-                        sliders[9] = g.addFloatSlider("Base radius of photometric aperture", 0.01, radius > 100 ? radius : 100, false, radius, 3, 1.0, d -> radius = d);
-                        sliders[10] = g.addFloatSlider("Fixed radius of inner background annulus", 0.01, rBack1 > 100 ? rBack1 : 100, false, rBack1, 3, 1.0, d -> rBack1 = d);
-                        sliders[11] = g.addFloatSlider("Fixed radius of outer background annulus", 0.01, rBack2 > 100 ? rBack2 : 100, false, rBack2, 3, 1.0, d -> rBack2 = d);
+                        sliders[9] = g.addFloatSlider(I18n.t("multiap.radius_phot_ell"), 0.01, radius > 100 ? radius : 100, false, radius, 3, 1.0, d -> radius = d);
+                        sliders[10] = g.addFloatSlider(I18n.t("multiap.radius_inner_bg_ell"), 0.01, rBack1 > 100 ? rBack1 : 100, false, rBack1, 3, 1.0, d -> rBack1 = d);
+                        sliders[11] = g.addFloatSlider(I18n.t("multiap.radius_outer_bg_ell"), 0.01, rBack2 > 100 ? rBack2 : 100, false, rBack2, 3, 1.0, d -> rBack2 = d);
                     });
                 }
             }
@@ -6192,26 +6193,26 @@ public class MultiAperture_ extends Aperture_ implements MouseListener, MouseMot
                     g.addToSameRow();
                     //g.setRightInset(20);
                     g.setNewPosition(GridBagConstraints.EAST);
-                    g.addBoundedNumericField("Normalized flux cutoff threshold:", new GenericSwingDialog.Bounds(0, false, 1, false), ApRadius.AUTO_FIXED.cutoff, .01, 6, "(0 < cutoff < 1 ; default = 0.010)", d -> ApRadius.AUTO_FIXED.cutoff = d);
+                    g.addBoundedNumericField(I18n.t("multiap.normalized_cutoff"), new GenericSwingDialog.Bounds(0, false, 1, false), ApRadius.AUTO_FIXED.cutoff, .01, 6, I18n.t("multiap.cutoff_hint"), d -> ApRadius.AUTO_FIXED.cutoff = d);
                     g.resetPositionOverride();
                     g.setLeftInset(20);
                     g.addGenericComponent(apRadiiButtons.get(ApRadius.AUTO_FIXED_STACK_RAD));
                     g.addToSameRow();
                     //g.setRightInset(20);
                     g.setNewPosition(GridBagConstraints.EAST);
-                    g.addBoundedNumericField("Normalized flux cutoff threshold:", new GenericSwingDialog.Bounds(0, false, 1, false), ApRadius.AUTO_FIXED_STACK_RAD.cutoff, .01, 6, "(0 < cutoff < 1 ; default = 0.010)", d -> ApRadius.AUTO_FIXED_STACK_RAD.cutoff = d);
+                    g.addBoundedNumericField(I18n.t("multiap.normalized_cutoff"), new GenericSwingDialog.Bounds(0, false, 1, false), ApRadius.AUTO_FIXED_STACK_RAD.cutoff, .01, 6, I18n.t("multiap.cutoff_hint"), d -> ApRadius.AUTO_FIXED_STACK_RAD.cutoff = d);
                     g.resetPositionOverride();
                     g.addGenericComponent(apRadiiButtons.get(ApRadius.AUTO_VAR_RAD_PROF));
                     g.addToSameRow();
                     //g.setRightInset(20);
                     g.setNewPosition(GridBagConstraints.EAST);
-                    g.addBoundedNumericField("Normalized flux cutoff threshold:", new GenericSwingDialog.Bounds(0, false, 1, false), ApRadius.AUTO_VAR_RAD_PROF.cutoff, .01, 6, "(0 < cutoff < 1 ; default = 0.010)", d -> ApRadius.AUTO_VAR_RAD_PROF.cutoff = d);
+                    g.addBoundedNumericField(I18n.t("multiap.normalized_cutoff"), new GenericSwingDialog.Bounds(0, false, 1, false), ApRadius.AUTO_VAR_RAD_PROF.cutoff, .01, 6, I18n.t("multiap.cutoff_hint"), d -> ApRadius.AUTO_VAR_RAD_PROF.cutoff = d);
                     g.resetPositionOverride();
                     g.addGenericComponent(apRadiiButtons.get(ApRadius.AUTO_VAR_FWHM));
                     g.addToSameRow();
                     g.setNewPosition(GridBagConstraints.EAST);
                     g.setRightInset(30);
-                    g.addFloatSlider("FWHM factor:", 0.1, 5.0, true, ApRadius.AUTO_VAR_FWHM.cutoff, 3, 0.1, d -> ApRadius.AUTO_VAR_FWHM.cutoff = d);
+                    g.addFloatSlider(I18n.t("multiap.fwhm_factor"), 0.1, 5.0, true, ApRadius.AUTO_VAR_FWHM.cutoff, 3, 0.1, d -> ApRadius.AUTO_VAR_FWHM.cutoff = d);
                     g.resetPositionOverride();
                     g.setOverridePosition(false);
                     apRadiiButtons.get(radiusSetting).setSelected(true);
@@ -6234,45 +6235,45 @@ public class MultiAperture_ extends Aperture_ implements MouseListener, MouseMot
                     g.addToSameRow();
                     //g.setRightInset(20);
                     g.setNewPosition(GridBagConstraints.EAST);
-                    g.addBoundedNumericField("Normalized flux cutoff threshold:", new GenericSwingDialog.Bounds(0, false, 1, false), ApRadius.AUTO_FIXED.cutoff, .01, 6, "(0 < cutoff < 1 ; default = 0.010)", d -> ApRadius.AUTO_FIXED.cutoff = d);
+                    g.addBoundedNumericField(I18n.t("multiap.normalized_cutoff"), new GenericSwingDialog.Bounds(0, false, 1, false), ApRadius.AUTO_FIXED.cutoff, .01, 6, I18n.t("multiap.cutoff_hint"), d -> ApRadius.AUTO_FIXED.cutoff = d);
                     g.resetPositionOverride();
                     g.setLeftInset(20);
                     g.addGenericComponent(apRadiiButtons.get(ApRadius.AUTO_FIXED_STACK_RAD));
                     g.addToSameRow();
                     //g.setRightInset(20);
                     g.setNewPosition(GridBagConstraints.EAST);
-                    g.addBoundedNumericField("Normalized flux cutoff threshold:", new GenericSwingDialog.Bounds(0, false, 1, false), ApRadius.AUTO_FIXED_STACK_RAD.cutoff, .01, 6, "(0 < cutoff < 1 ; default = 0.010)", d -> ApRadius.AUTO_FIXED_STACK_RAD.cutoff = d);
+                    g.addBoundedNumericField(I18n.t("multiap.normalized_cutoff"), new GenericSwingDialog.Bounds(0, false, 1, false), ApRadius.AUTO_FIXED_STACK_RAD.cutoff, .01, 6, I18n.t("multiap.cutoff_hint"), d -> ApRadius.AUTO_FIXED_STACK_RAD.cutoff = d);
                     g.resetPositionOverride();
                     g.addGenericComponent(apRadiiButtons.get(ApRadius.AUTO_VAR_RAD_PROF));
                     g.addToSameRow();
                     //g.setRightInset(20);
                     g.setNewPosition(GridBagConstraints.EAST);
-                    g.addBoundedNumericField("Normalized flux cutoff threshold:", new GenericSwingDialog.Bounds(0, false, 1, false), ApRadius.AUTO_VAR_RAD_PROF.cutoff, .01, 6, "(0 < cutoff < 1 ; default = 0.010)", d -> ApRadius.AUTO_VAR_RAD_PROF.cutoff = d);
+                    g.addBoundedNumericField(I18n.t("multiap.normalized_cutoff"), new GenericSwingDialog.Bounds(0, false, 1, false), ApRadius.AUTO_VAR_RAD_PROF.cutoff, .01, 6, I18n.t("multiap.cutoff_hint"), d -> ApRadius.AUTO_VAR_RAD_PROF.cutoff = d);
                     g.resetPositionOverride();
                     g.addGenericComponent(apRadiiButtons.get(ApRadius.AUTO_VAR_FWHM));
                     g.addToSameRow();
                     g.setNewPosition(GridBagConstraints.EAST);
                     g.setRightInset(30);
-                    g.addFloatSlider("FWHM factor:", 0.1, 5.0, true, ApRadius.AUTO_VAR_FWHM.cutoff, 3, 0.1, d -> ApRadius.AUTO_VAR_FWHM.cutoff = d);
+                    g.addFloatSlider(I18n.t("multiap.fwhm_factor"), 0.1, 5.0, true, ApRadius.AUTO_VAR_FWHM.cutoff, 3, 0.1, d -> ApRadius.AUTO_VAR_FWHM.cutoff = d);
                     g.resetPositionOverride();
                     g.setOverridePosition(false);
                     apRadiiButtons.get(radiusSetting).setSelected(true);
 
                     g.addLineSeparator();
 
-                    var lockEcc = g.addCheckbox("Lock eccentricity", SHAPED_AP_ECCENTRICITY_LOCKED.get(), SHAPED_AP_ECCENTRICITY_LOCKED::set);
+                    var lockEcc = g.addCheckbox(I18n.t("multiap.lock_ecc"), SHAPED_AP_ECCENTRICITY_LOCKED.get(), SHAPED_AP_ECCENTRICITY_LOCKED::set);
                     g.addToSameRow();
-                    var ePanel = g.addFloatSlider("Eccentricity", 0, 1, SHAPED_AP_ECCENTRICITY.get(), 3, 0.01, SHAPED_AP_ECCENTRICITY::set);
-                    var lockAng = g.addCheckbox("Lock angle", SHAPED_AP_ANGLE_LOCKED.get(), SHAPED_AP_ANGLE_LOCKED::set);
+                    var ePanel = g.addFloatSlider(I18n.t("multiap.eccentricity"), 0, 1, SHAPED_AP_ECCENTRICITY.get(), 3, 0.01, SHAPED_AP_ECCENTRICITY::set);
+                    var lockAng = g.addCheckbox(I18n.t("multiap.lock_angle"), SHAPED_AP_ANGLE_LOCKED.get(), SHAPED_AP_ANGLE_LOCKED::set);
                     g.addToSameRow();
-                    var aPanel = g.addFloatSlider("Angle", 0, 360, SHAPED_AP_ANGLE.get(), 3, 1, SHAPED_AP_ANGLE::set);
-                    var indep = g.addCheckbox("Lock all apertures' ecc. and angle to T1's", SHAPED_VARIATION_LOCKED.get(), SHAPED_VARIATION_LOCKED::set);
+                    var aPanel = g.addFloatSlider(I18n.t("multiap.angle"), 0, 360, SHAPED_AP_ANGLE.get(), 3, 1, SHAPED_AP_ANGLE::set);
+                    var indep = g.addCheckbox(I18n.t("multiap.lock_all_to_t1"), SHAPED_VARIATION_LOCKED.get(), SHAPED_VARIATION_LOCKED::set);
                     indep.setToolTipText("""
                             When enabled, each aperture in the image may vary it's angle and eccentricity based on the \
                             centroiding result at each aperture location.
                             If disabled, all apertures will use the angle and eccentricity measured for T1.
                             """);
-                    var lockArea = g.addCheckbox("Keep aperture area constant", SHAPED_AP_AREA_LOCKED.get(), SHAPED_AP_AREA_LOCKED::set);
+                    var lockArea = g.addCheckbox(I18n.t("multiap.keep_area_constant"), SHAPED_AP_AREA_LOCKED.get(), SHAPED_AP_AREA_LOCKED::set);
                     shapedHolder.setGui(lockEcc, ePanel, lockAng, aPanel, indep, lockArea);
                     setEnabled(ePanel, SHAPED_AP_ECCENTRICITY_LOCKED.get());
                     setEnabled(aPanel, SHAPED_AP_ANGLE_LOCKED.get());
@@ -6379,7 +6380,7 @@ public class MultiAperture_ extends Aperture_ implements MouseListener, MouseMot
         gd.addNewSwappableSectionPanel(ApertureShape.class, (d, shape) -> {
             switch (shape) {
                 case CIRCULAR, ELLIPTICAL -> {
-                    gd.addCheckbox("Use RA/Dec to locate aperture positions", useWCS, b -> {
+                    gd.addCheckbox(I18n.t("multiap.use_radec"), useWCS, b -> {
                                 useWCS = b;
                             })
                             .setToolTipText("<html>If enabled, apertures will first be placed according to their RA and DEC location.<br>"+
@@ -6387,7 +6388,7 @@ public class MultiAperture_ extends Aperture_ implements MouseListener, MouseMot
                                     "If 'Halt on WCS error' below is disabled, mixed mode RA-Dec and X-Y placement is possible.<br>" +
                                     "Mixed-mode is useful if plate solving is slow. In this mode, only the first image and any subsequent image<br>"+
                                     "with a large shift on the detector, such as a meridian flip, need to be plate solved.</html>");
-                    var movingCB = d.addCheckbox("T1 is moving object", MOVING_T1.get(), MOVING_T1::set);
+                    var movingCB = d.addCheckbox(I18n.t("multiap.moving_t1"), MOVING_T1.get(), MOVING_T1::set);
                     movingCB.setToolTipText("""
                             <html>
                             User will be prompted to identify T1 in the first and last image<br>
@@ -6395,7 +6396,7 @@ public class MultiAperture_ extends Aperture_ implements MouseListener, MouseMot
                             Best combined with place by ra/dec and platesolved images
                             </html>
                             """);
-                    gd.addCheckbox("Use single step mode (1-click to set first aperture location in each image)", singleStep, b -> {
+                    gd.addCheckbox(I18n.t("multiap.single_step"), singleStep, b -> {
                                 singleStep = b;
                                 singleStepListeners.forEach(c -> {
                                     if ("with".equals(c.getName())) {
@@ -6411,7 +6412,7 @@ public class MultiAperture_ extends Aperture_ implements MouseListener, MouseMot
                             .setToolTipText("<html>Single step mode allows apertures to be placed in the first image, and then after each image is processed,<br>"+
                                     "Multi-Aperture will pause to allow the user to click near the T1 star location in the next image. This mode of operation is useful with<br>"+
                                     "image sequences that are not plate solved and that have image shifts too large for centroid to track.</html>");
-                    var c1 = gd.addCheckbox("Allow aperture changes between slices in single step mode (right click to advance image)", allowSingleStepApChanges, b -> {
+                    var c1 = gd.addCheckbox(I18n.t("multiap.single_step_allow_changes"), allowSingleStepApChanges, b -> {
                         allowSingleStepApChanges = b;
                     });
                     c1.setName("with");
@@ -6424,7 +6425,7 @@ public class MultiAperture_ extends Aperture_ implements MouseListener, MouseMot
                     gd.addDoubleSpaceLineSeparator();
                 }
                 case FREEFORM -> {
-                    gd.addCheckbox("Use RA/Dec to locate aperture positions", useWCS, b -> useWCS = b)
+                    gd.addCheckbox(I18n.t("multiap.use_radec"), useWCS, b -> useWCS = b)
                             .setToolTipText("<html>If enabled, apertures will first be placed according to their RA and DEC location.<br>"+
                                     "If centroid is also enabled for an aperture, the centroid operation will start from the RA and Dec position.<br>"+
                                     "If 'Halt on WCS error' below is disabled, mixed mode RA-Dec and X-Y placement is possible.<br>" +
@@ -6447,15 +6448,15 @@ public class MultiAperture_ extends Aperture_ implements MouseListener, MouseMot
         gd.addNewSwappableSectionPanel(ApertureShape.class, (d, shape) -> {
             switch (shape) {
                 case CIRCULAR, ELLIPTICAL -> {
-                    d.addMessage("CLICK 'PLACE APERTURES' AND SELECT APERTURE LOCATIONS WITH LEFT CLICKS.\nTHEN RIGHT CLICK or <ENTER> TO BEGIN PROCESSING.\n(to abort aperture selection or processing, press <ESC>)");
+                    d.addMessage(I18n.t("multiap.click_place_apertures"));
                 }
                 case FREEFORM -> {
-                    d.addMessage("FOLLOW INSTRUCTIONS ON NEXT PANEL TO PROCEED");
+                    d.addMessage(I18n.t("multiap.follow_instructions"));
                 }
             }
         });
 
-        if (!(this instanceof Stack_Aligner)) gd.enableYesNoCancel("Place Apertures", "Aperture Settings");
+        if (!(this instanceof Stack_Aligner)) gd.enableYesNoCancel(I18n.t("multiap.button_place"), I18n.t("multiap.button_settings"));
         return gd;
     }
 
@@ -6489,7 +6490,9 @@ public class MultiAperture_ extends Aperture_ implements MouseListener, MouseMot
 
         var suggestionComponents = new LinkedHashSet<Component>();
 
-        var s = gd.addCheckboxGroup(1, 3, new String[]{"Auto comparison stars", "Enable log", "Show peaks"}, new boolean[]{suggestCompStars, enableLog, debugAp}, listb);
+        var s = gd.addCheckboxGroup(1, 3,
+                new String[]{I18n.t("multiap.auto_compstars"), I18n.t("multiap.enable_log"), I18n.t("multiap.show_peaks")},
+                new boolean[]{suggestCompStars, enableLog, debugAp}, listb);
         var boxes = s.subComponents();
         ((JComponent) boxes.get(0)).setToolTipText("If enabled, uses the following settings to generate a set of comparison stars based on the star in the specified Base Aperture below.");
         ((JComponent) boxes.get(1)).setToolTipText("Enable log output for comparison star selection.");
@@ -6504,7 +6507,7 @@ public class MultiAperture_ extends Aperture_ implements MouseListener, MouseMot
         suggestionComponents.add(gauss.c1());
 
         gd.buildRow((g, b) -> {
-            g.addMessage("Restrict Search Area");
+            g.addMessage(I18n.t("multiap.restrict_search"));
             var regExclusion = gd.addNStateDropdown(REGION_EXLUSION_MODE.get(), REGION_EXLUSION_MODE::set);
             gd.addToSameRow();
             var manualRegionExclusion = new JButton("Edit Border Regions");
@@ -6542,7 +6545,7 @@ public class MultiAperture_ extends Aperture_ implements MouseListener, MouseMot
             suggestionComponents.add(manualRegionExclusion);
         });
 
-        var autoPeaks = gd.addCheckbox("Auto Thresholds", autoPeakValues, b -> autoPeakValues = b);
+        var autoPeaks = gd.addCheckbox(I18n.t("multiap.auto_thresholds"), autoPeakValues, b -> autoPeakValues = b);
         gd.addToSameRow();
         var maxPeak = gd.addBoundedNumericField("Max. Peak Value", new GenericSwingDialog.Bounds(0, Double.MAX_VALUE), maxPeakValue, 1, columns, null, d -> maxPeakValue = d);
         gd.addToSameRow();
@@ -6706,8 +6709,8 @@ public class MultiAperture_ extends Aperture_ implements MouseListener, MouseMot
         gd.addNewSwappableSectionPanel(ApertureShape.class, (d, shape) -> {
             switch (shape) {
                 case CIRCULAR, ELLIPTICAL -> {
-                    var penultimateBoxes = d.addCheckboxGroup(2, 2, new String[]{"Centroid apertures (initial setting)", "Halt processing on WCS or centroid error",
-                                    "Remove stars from background", "Assume background is a plane"},
+                    var penultimateBoxes = d.addCheckboxGroup(2, 2, new String[]{I18n.t("multiap.centroid_initial"), I18n.t("multiap.halt_on_error"),
+                                    I18n.t("multiap.remove_stars_bg"), I18n.t("multiap.bg_is_plane")},
                             new boolean[]{reposition, haltOnError, removeBackStars, backIsPlane}, list1);
 
                     penultimateBoxes.subComponents().get(0).setToolTipText("<html>Enable to set the initial state of the 'Centroid' icon when aperture placement starts.<br>" +
@@ -6720,7 +6723,7 @@ public class MultiAperture_ extends Aperture_ implements MouseListener, MouseMot
                     penultimateBoxes.subComponents().get(3).setToolTipText("Enable to fit a plane to the background pixels to attempt to account for large background gradients in the images.");
                 }
                 case FREEFORM -> {
-                    var penultimateBoxes = d.addCheckboxGroup(1, 3, new String[]{"Halt processing on WCS or centroid error", "Remove stars from background", "Assume background is a plane"},
+                    var penultimateBoxes = d.addCheckboxGroup(1, 3, new String[]{I18n.t("multiap.halt_on_error"), I18n.t("multiap.remove_stars_bg"), I18n.t("multiap.bg_is_plane")},
                             new boolean[]{haltOnError, removeBackStars, backIsPlane}, list1.subList(1, 4));
                     penultimateBoxes.subComponents().get(0).setToolTipText("Enable to halt Multi-aperture if centroid fails, or if 'Use RA-Dec' is selected, but an image is not plate solved.");
                     penultimateBoxes.subComponents().get(1).setToolTipText("<html>Enable to use an interative 2-sigma outlier removal technique to ignore pixels in the background region<br>"+
@@ -6736,13 +6739,13 @@ public class MultiAperture_ extends Aperture_ implements MouseListener, MouseMot
         gd.addNewSwappableSectionPanel(ApertureShape.class, (d, shape) -> {
             switch (shape) {
                 case CIRCULAR, ELLIPTICAL -> {
-                    d.addCheckbox("Prompt to enter ref star apparent magnitude (required if target star apparent mag is desired)", getMags, b -> getMags = b)
+                    d.addCheckbox(I18n.t("multiap.prompt_refstar_mag"), getMags, b -> getMags = b)
                             .setToolTipText("Apparent magntiudes are not needed for standard differential photometry.");
                     final var list2 = new ArrayList<Consumer<Boolean>>();
                     list2.add(b -> updatePlot = b);
                     list2.add(b -> showHelp = b);
                     list2.add(updateImageDisplay::set);
-                    var bottomChecks = d.addCheckboxGroup(2, 2, new String[]{"Update plot while running", "Show help panel during aperture selection", "Update image display while running"},
+                    var bottomChecks = d.addCheckboxGroup(2, 2, new String[]{I18n.t("multiap.update_plot"), I18n.t("multiap.show_help"), I18n.t("multiap.update_image")},
                             new boolean[]{updatePlot, showHelp, updateImageDisplay.get()}, list2);
                     bottomChecks.subComponents().get(0).setToolTipText("<html>Multi-aperture will run faster with this option disabled,<br>" +
                             "but the plot displays will only update once when the Multi-Aperture run has finished.</html>");
@@ -6754,7 +6757,7 @@ public class MultiAperture_ extends Aperture_ implements MouseListener, MouseMot
                     final var list2 = new ArrayList<Consumer<Boolean>>();
                     list2.add(b -> updatePlot = b);
                     list2.add(updateImageDisplay::set);
-                    var bottomChecks = d.addCheckboxGroup(1, 2, new String[]{"Update plot while running", "Update image display while running"},
+                    var bottomChecks = d.addCheckboxGroup(1, 2, new String[]{I18n.t("multiap.update_plot"), I18n.t("multiap.update_image")},
                             new boolean[]{updatePlot, updateImageDisplay.get()}, list2);
                     bottomChecks.subComponents().get(0).setToolTipText("<html>Multi-aperture will run faster with this option disabled,<br>" +
                             "but the plot displays will only update once when the Multi-Aperture run has finished.</html>");

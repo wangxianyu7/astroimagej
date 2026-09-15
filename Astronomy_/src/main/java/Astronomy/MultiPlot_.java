@@ -133,6 +133,7 @@ import astroj.OverlayCanvas;
 import astroj.ShapedApertureRoi;
 import astroj.SpringUtil;
 import ij.IJ;
+import ij.I18n;
 import ij.ImagePlus;
 import ij.ImageStack;
 import ij.Prefs;
@@ -6674,8 +6675,8 @@ public class MultiPlot_ implements PlugIn, KeyListener {
         xStep = 0.01;
 
         mainmenubar = new JMenuBar();
-        filemenu = new JMenu("File");
-        preferencesmenu = new JMenu("Preferences");
+        filemenu = new JMenu(I18n.t("menu.File"));
+        preferencesmenu = new JMenu(I18n.t("menu.Preferences"));
 
         tableName = "Results";
         list = new Vector<>();
@@ -7703,8 +7704,8 @@ public class MultiPlot_ implements PlugIn, KeyListener {
         mainscrollpane = new JScrollPane(mainpanel);
 
         mainmenubar = new JMenuBar();
-        filemenu = new JMenu("  File      ");
-        preferencesmenu = new JMenu("Preferences    ");
+        filemenu = new JMenu(I18n.t("menu.File"));
+        preferencesmenu = new JMenu(I18n.t("menu.Preferences"));
 
         mainpanelgroupa = new JPanel(new SpringLayout());
 
@@ -7719,7 +7720,7 @@ public class MultiPlot_ implements PlugIn, KeyListener {
 
         // BUILD MENUBAR
 
-        opentablemenuitem = new JMenuItem("Select open table...");
+        opentablemenuitem = new JMenuItem(I18n.t("menu.Select open table..."));
         opentablemenuitem.setToolTipText("<html>" + "select a table that is already open for plotting" + "</html>");
         opentablemenuitem.addActionListener(e -> {
             selectAnotherTableCanceled = false;
@@ -7739,88 +7740,88 @@ public class MultiPlot_ implements PlugIn, KeyListener {
         });
         filemenu.add(opentablemenuitem);
 
-        JMenuItem appendtablerowsmenuitem = new JMenuItem("Append open table as new rows...");
+        JMenuItem appendtablerowsmenuitem = new JMenuItem(I18n.t("menu.Append open table as new rows..."));
         appendtablerowsmenuitem.setToolTipText("<html>" + "select a table that is already open to append to current table" + "</html>");
         appendtablerowsmenuitem.addActionListener(e -> appendDataAsRows(false, null));
         filemenu.add(appendtablerowsmenuitem);
 
-        JMenuItem appendtablecolumnssmenuitem = new JMenuItem("Append open table as new columns...");
+        JMenuItem appendtablecolumnssmenuitem = new JMenuItem(I18n.t("menu.Append open table as new columns..."));
         appendtablecolumnssmenuitem.setToolTipText("<html>" + "select a table that is already open to append to current table" + "</html>");
         appendtablecolumnssmenuitem.addActionListener(e -> appendDataAsColumns(false, null));
         filemenu.add(appendtablecolumnssmenuitem);
         filemenu.addSeparator();
 
-        opendatamenuitem = new JMenuItem("Open table from file...");
+        opendatamenuitem = new JMenuItem(I18n.t("menu.Open table from file..."));
         opendatamenuitem.setToolTipText("<html>" + "default input format = tab delimited, or use" + "<br>" + "filename.csv = comma delimited" + "<br>" + "filename.prn or filename.spc = space delimted" + "<br>" + "---------------------------------------------" + "<br>" + "first line should be column headings delimited as stated above" + "<br>" + "lines starting with # are considered comments and ignored, except" + "<br>" + "the last comment before the first data line can be headings" + "</html>");
         opendatamenuitem.addActionListener(e -> openData());
         filemenu.add(opendatamenuitem);
 
-        JMenuItem appenddatarowsmenuitem = new JMenuItem("Append table from file as new rows...");
+        JMenuItem appenddatarowsmenuitem = new JMenuItem(I18n.t("menu.Append table from file as new rows..."));
         appenddatarowsmenuitem.setToolTipText("<html>" + "default input format = tab delimited, or use" + "<br>" + "filename.csv = comma delimited" + "<br>" + "filename.prn or filename.spc = space delimted" + "<br>" + "---------------------------------------------" + "<br>" + "first line should be column headings delimited as stated above" + "<br>" + "lines starting with # are considered comments and ignored, except" + "<br>" + "the last comment before the first data line can be headings" + "</html>");
         appenddatarowsmenuitem.addActionListener(e -> appendDataAsRows(true, null));
         filemenu.add(appenddatarowsmenuitem);
 
-        JMenuItem appenddatacolumnsmenuitem = new JMenuItem("Append table from file as new columns...");
+        JMenuItem appenddatacolumnsmenuitem = new JMenuItem(I18n.t("menu.Append table from file as new columns..."));
         appenddatacolumnsmenuitem.setToolTipText("<html>" + "default input format = tab delimited, or use" + "<br>" + "filename.csv = comma delimited" + "<br>" + "filename.prn or filename.spc = space delimted" + "<br>" + "---------------------------------------------" + "<br>" + "first line should be column headings delimited as stated above" + "<br>" + "lines starting with # are considered comments and ignored, except" + "<br>" + "the last comment before the first data line can be headings" + "</html>");
         appenddatacolumnsmenuitem.addActionListener(e -> appendDataAsColumns(true, null));
         filemenu.add(appenddatacolumnsmenuitem);
 
-        openplotconfigmenuitem = new JMenuItem("Open plot configuration from file...");
+        openplotconfigmenuitem = new JMenuItem(I18n.t("menu.Open plot configuration from file..."));
         openplotconfigmenuitem.setToolTipText("<html>" + "opens a previously saved plot configuration<br>" + "from a user selected file</html>");
         openplotconfigmenuitem.addActionListener(e -> openConfig(false));
         filemenu.add(openplotconfigmenuitem);
 
-        opendataconfigmenuitem = new JMenuItem("Open table and plot configuration from file...");
+        opendataconfigmenuitem = new JMenuItem(I18n.t("menu.Open table and plot configuration from file..."));
         opendataconfigmenuitem.setToolTipText("<html>" + "opens a previously saved measurement table" + "<br>" + "from a user selected file and attempts to" + "<br>" + "open a plot configuration file with the" + "<br>" + "same name but ending in .plotcfg" + "</html>");
         opendataconfigmenuitem.addActionListener(e -> openDataAndConfig(null));
         filemenu.add(opendataconfigmenuitem);
 
         filemenu.addSeparator();
 
-        savedatamenuitem = new JMenuItem("Save data to ASCII table file...");
+        savedatamenuitem = new JMenuItem(I18n.t("menu.Save data to ASCII table file..."));
         savedatamenuitem.setToolTipText("<html>" + "saves measurement table data to a user selected file" + "</html>");
         savedatamenuitem.addActionListener(e -> saveData());
         filemenu.add(savedatamenuitem);
 
-        var savedatafitsmenuitem = new JMenuItem("Save data to FITs file...");
+        var savedatafitsmenuitem = new JMenuItem(I18n.t("menu.Save data to FITs file..."));
         savedatafitsmenuitem.setToolTipText("<html>" + "saves measurement table data to a user selected file" + "</html>");
         savedatafitsmenuitem.addActionListener(e -> saveData(true, false, false));
         filemenu.add(savedatafitsmenuitem);
 
-        var savedataAndCfgfitsmenuitem = new JMenuItem("Save data, plotcfg, and apertures to FITs file...");
+        var savedataAndCfgfitsmenuitem = new JMenuItem(I18n.t("menu.Save data, plotcfg, and apertures to FITs file..."));
         savedataAndCfgfitsmenuitem.setToolTipText("<html>" + "saves measurement table data to a user selected file" + "</html>");
         savedataAndCfgfitsmenuitem.addActionListener(e -> saveData(true, true, true));
         filemenu.add(savedataAndCfgfitsmenuitem);
 
-        JMenuItem savedatasubsetmenuitem = new JMenuItem("Save data subset(s) to file...");
+        JMenuItem savedatasubsetmenuitem = new JMenuItem(I18n.t("menu.Save data subset(s) to file..."));
         savedatasubsetmenuitem.setToolTipText("<html>" + "saves a subset of measurement table data to a user selected file" + "</html>");
         savedatasubsetmenuitem.addActionListener(e -> saveDataSubsetDialog(null));
         filemenu.add(savedatasubsetmenuitem);
 
 
-        JMenuItem saveimagepngmenuitem = new JMenuItem("Save plot image as PNG...");
+        JMenuItem saveimagepngmenuitem = new JMenuItem(I18n.t("menu.Save plot image as PNG..."));
         saveimagepngmenuitem.setToolTipText("<html>" + "saves plot image as a .png file" + "</html>");
         saveimagepngmenuitem.addActionListener(e -> savePlotImageAsPng());
         filemenu.add(saveimagepngmenuitem);
 
-        JMenuItem saveimagejpgmenuitem = new JMenuItem("Save plot image as JPG...");
+        JMenuItem saveimagejpgmenuitem = new JMenuItem(I18n.t("menu.Save plot image as JPG..."));
         saveimagejpgmenuitem.setToolTipText("<html>" + "saves plot image as a .jpg file" + "</html>");
         saveimagejpgmenuitem.addActionListener(e -> savePlotImageAsJpg());
         filemenu.add(saveimagejpgmenuitem);
 
-        JMenuItem saveimagepdfmenuitem = new JMenuItem("Save plot image as vector PDF...");
+        JMenuItem saveimagepdfmenuitem = new JMenuItem(I18n.t("menu.Save plot image as vector PDF..."));
         saveimagepdfmenuitem.setToolTipText("<html>" + "saves plot image as a .pdf file" + "</html>");
         saveimagepdfmenuitem.addActionListener(e -> savePlotImageAsVectorPdf());
         filemenu.add(saveimagepdfmenuitem);
 
-        saveplotconfigmenuitem = new JMenuItem("Save plot configuration...");
+        saveplotconfigmenuitem = new JMenuItem(I18n.t("menu.Save plot configuration..."));
         saveplotconfigmenuitem.setToolTipText("<html>" + "saves plot configuration to a user selected file</html>");
         saveplotconfigmenuitem.addActionListener(e -> saveConfig(false));
         filemenu.add(saveplotconfigmenuitem);
 
         filemenu.addSeparator();
 
-        JMenuItem createNEBReportMenuItem = new JMenuItem("Create NEB search reports and plots...");
+        JMenuItem createNEBReportMenuItem = new JMenuItem(I18n.t("menu.Create NEB search reports and plots..."));
         createNEBReportMenuItem.setToolTipText("<html>" + "Create NEB search reports and plots.<br>");
         createNEBReportMenuItem.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
@@ -7829,7 +7830,7 @@ public class MultiPlot_ implements PlugIn, KeyListener {
         });
         filemenu.add(createNEBReportMenuItem);
 
-        JMenuItem createPeriodogram = new JMenuItem("Create periodogram...");
+        JMenuItem createPeriodogram = new JMenuItem(I18n.t("menu.Create periodogram..."));
         createPeriodogram.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
                 IJ.runPlugIn("Astronomy.Periodogram_", "");
@@ -7837,7 +7838,7 @@ public class MultiPlot_ implements PlugIn, KeyListener {
         });
         filemenu.add(createPeriodogram);
 
-        JMenuItem createAAVSOReportMenuItem = new JMenuItem("Create AAVSO Exoplanet Database formatted data...");
+        JMenuItem createAAVSOReportMenuItem = new JMenuItem(I18n.t("menu.Create AAVSO Exoplanet Database formatted data..."));
         createAAVSOReportMenuItem.setToolTipText("<html>" + "Create AAVSO formatted data for submission to the AAVSO Exoplanet Database.</html>");
         createAAVSOReportMenuItem.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
@@ -7846,7 +7847,7 @@ public class MultiPlot_ implements PlugIn, KeyListener {
         });
         filemenu.add(createAAVSOReportMenuItem);
 
-        JMenuItem createAAVSOVarStarReportMenuItem = new JMenuItem("Create AAVSO Variable Star Report...");
+        JMenuItem createAAVSOVarStarReportMenuItem = new JMenuItem(I18n.t("menu.Create AAVSO Variable Star Report..."));
         createAAVSOVarStarReportMenuItem.setToolTipText("<html>" + "Create AAVSO formatted data for submission to the AAVSO Variable Star Database.</html>");
         createAAVSOVarStarReportMenuItem.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
@@ -7855,53 +7856,53 @@ public class MultiPlot_ implements PlugIn, KeyListener {
         });
         filemenu.add(createAAVSOVarStarReportMenuItem);
 
-        JMenuItem createMpcFormatMenuItem = new JMenuItem("Create Minor Planet Center (MPC) formatted data...");
+        JMenuItem createMpcFormatMenuItem = new JMenuItem(I18n.t("menu.Create Minor Planet Center (MPC) formatted data..."));
         createMpcFormatMenuItem.setToolTipText("<html>" + "Create MPC formatted data for submission to the Minor Planet Center.<br>" + "Open a table into Multi-plot before creating the MPC formatted data.</html>");
         createMpcFormatMenuItem.addActionListener(e -> createMpcFormatDialog());
         filemenu.add(createMpcFormatMenuItem);
 
         filemenu.addSeparator();
 
-        openplottemplatemenuitem = new JMenuItem("Open plot configuration template...");
+        openplottemplatemenuitem = new JMenuItem(I18n.t("menu.Open plot configuration template..."));
         openplottemplatemenuitem.setToolTipText("<html>" + "opens a plot configuration from a user selected template file path</html>");
         openplottemplatemenuitem.addActionListener(e -> openConfig(true));
         filemenu.add(openplottemplatemenuitem);
 
-        saveplottemplatemenuitem = new JMenuItem("Save plot configuration template...");
+        saveplottemplatemenuitem = new JMenuItem(I18n.t("menu.Save plot configuration template..."));
         saveplottemplatemenuitem.setToolTipText("<html>" + "saves plot configuration to user selected template file path</html>");
         saveplottemplatemenuitem.addActionListener(e -> saveConfig(true));
         filemenu.add(saveplottemplatemenuitem);
 
         filemenu.addSeparator();
 
-        JMenuItem saveAllMenuItem = new JMenuItem("Save all...");
+        JMenuItem saveAllMenuItem = new JMenuItem(I18n.t("menu.Save all..."));
         saveAllMenuItem.addActionListener(e -> {
             if (saveAllPNG) { saveAll("png", true); } else saveAll("jpg", true);
         });
         filemenu.add(saveAllMenuItem);
 
-        JMenuItem saveAllWithOptionsMenuItem = new JMenuItem("Save all (with options)...");
+        JMenuItem saveAllWithOptionsMenuItem = new JMenuItem(I18n.t("menu.Save all (with options)..."));
         saveAllWithOptionsMenuItem.addActionListener(e -> saveAllDialog());
         filemenu.add(saveAllWithOptionsMenuItem);
 
         filemenu.addSeparator();
 
-        backupAllAIJPrefsMenuItem = new JMenuItem("Save all AIJ preferences to backup file...");
+        backupAllAIJPrefsMenuItem = new JMenuItem(I18n.t("menu.Save all AIJ preferences to backup file..."));
         backupAllAIJPrefsMenuItem.addActionListener(e -> {
             savePreferences();
             IJU.backupAllAIJSettings(false);
         });
         filemenu.add(backupAllAIJPrefsMenuItem);
 
-        restoreAllAIJPrefsMenuItem = new JMenuItem("Restore all AIJ preferences from backup file...");
+        restoreAllAIJPrefsMenuItem = new JMenuItem(I18n.t("menu.Restore all AIJ preferences from backup file..."));
         restoreAllAIJPrefsMenuItem.addActionListener(e -> IJU.restoreAllAIJSettings());
         filemenu.add(restoreAllAIJPrefsMenuItem);
 
-        restoreDefaultAIJPrefsMenuItem = new JMenuItem("Restore all default AIJ preferences...");
+        restoreDefaultAIJPrefsMenuItem = new JMenuItem(I18n.t("menu.Restore all default AIJ preferences..."));
         restoreDefaultAIJPrefsMenuItem.addActionListener(e -> IJU.restoreDefaultAIJSettings(false));
         filemenu.add(restoreDefaultAIJPrefsMenuItem);
 
-        var openAijPrefsFolder = new JMenuItem("Open AIJ preferences folder...");
+        var openAijPrefsFolder = new JMenuItem(I18n.t("menu.Open AIJ preferences folder..."));
         openAijPrefsFolder.addActionListener(_ -> {
             try {
                 Desktop.getDesktop().open(new File(Prefs.getPrefsDir()));
@@ -7913,13 +7914,13 @@ public class MultiPlot_ implements PlugIn, KeyListener {
 
         filemenu.addSeparator();
 
-        JMenuItem exitmenuitem = new JMenuItem("Exit");
+        JMenuItem exitmenuitem = new JMenuItem(I18n.t("menu.Exit"));
         exitmenuitem.addActionListener(e -> saveAndClose());
         filemenu.add(exitmenuitem);
 
         mainmenubar.add(filemenu);
 
-        opendatasetCB = new JCheckBoxMenuItem("Open Y-data columns window at startup", openDataSetWindow);
+        opendatasetCB = new JCheckBoxMenuItem(I18n.t("menu.Open Y-data columns window at startup"), openDataSetWindow);
         opendatasetCB.addItemListener(e -> {
             if (e.getStateChange() == ItemEvent.DESELECTED) {
                 openDataSetWindow = false;
@@ -7928,7 +7929,7 @@ public class MultiPlot_ implements PlugIn, KeyListener {
         });
         preferencesmenu.add(opendatasetCB);
 
-        usewidedataCB = new JCheckBoxMenuItem("Use --wide-- Y-data columns window", useWideDataPanel);
+        usewidedataCB = new JCheckBoxMenuItem(I18n.t("menu.Use --wide-- Y-data columns window"), useWideDataPanel);
         usewidedataCB.addItemListener(e -> {
             if (e.getStateChange() == ItemEvent.DESELECTED) {
                 useWideDataPanel = false;
@@ -7957,7 +7958,7 @@ public class MultiPlot_ implements PlugIn, KeyListener {
 
         preferencesmenu.addSeparator();
 
-        openrefstarCB = new JCheckBoxMenuItem("Open reference star selection window at startup", openRefStarWindow);
+        openrefstarCB = new JCheckBoxMenuItem(I18n.t("menu.Open reference star selection window at startup"), openRefStarWindow);
         openrefstarCB.addItemListener(e -> {
             if (e.getStateChange() == ItemEvent.DESELECTED) {
                 openRefStarWindow = false;
@@ -7966,11 +7967,11 @@ public class MultiPlot_ implements PlugIn, KeyListener {
         });
         preferencesmenu.add(openrefstarCB);   //openFitPanelsCB
 
-        setrefstarhorzsizemenuitem = new JMenuItem("Set horizontal width of reference star window...");
+        setrefstarhorzsizemenuitem = new JMenuItem(I18n.t("menu.Set horizontal width of reference star window..."));
         setrefstarhorzsizemenuitem.addActionListener(e -> changeRefStarHorizontalWidth());
         preferencesmenu.add(setrefstarhorzsizemenuitem);
 
-        openFitPanelsCB = new JCheckBoxMenuItem("Open light curve fit panels at startup", openFitPanels);
+        openFitPanelsCB = new JCheckBoxMenuItem(I18n.t("menu.Open light curve fit panels at startup"), openFitPanels);
         openFitPanelsCB.addItemListener(e -> {
             if (e.getStateChange() == ItemEvent.DESELECTED) {
                 openFitPanels = false;
@@ -7981,7 +7982,7 @@ public class MultiPlot_ implements PlugIn, KeyListener {
 
         preferencesmenu.addSeparator();
 
-        rememberwindowlocationsCB = new JCheckBoxMenuItem("Open windows at previous locations", rememberWindowLocations);
+        rememberwindowlocationsCB = new JCheckBoxMenuItem(I18n.t("menu.Open windows at previous locations"), rememberWindowLocations);
         rememberwindowlocationsCB.addItemListener(e -> {
             if (e.getStateChange() == ItemEvent.DESELECTED) {
                 rememberWindowLocations = false;
@@ -7990,7 +7991,7 @@ public class MultiPlot_ implements PlugIn, KeyListener {
         });
         preferencesmenu.add(rememberwindowlocationsCB);
 
-        keepSeparateLocationsForFitWindowsCB = new JCheckBoxMenuItem("Keep separate locations for each light curve fitting window", keepSeparateLocationsForFitWindows);
+        keepSeparateLocationsForFitWindowsCB = new JCheckBoxMenuItem(I18n.t("menu.Keep separate locations for each light curve fitting window"), keepSeparateLocationsForFitWindows);
         keepSeparateLocationsForFitWindowsCB.addItemListener(e -> {
             if (e.getStateChange() == ItemEvent.DESELECTED) {
                 keepSeparateLocationsForFitWindows = false;
@@ -8001,7 +8002,7 @@ public class MultiPlot_ implements PlugIn, KeyListener {
 
         preferencesmenu.addSeparator();
 
-        divideNotSubtractCB = new JCheckBoxMenuItem("Detrend by division (deselect for faster subtraction)", divideNotSubtract);
+        divideNotSubtractCB = new JCheckBoxMenuItem(I18n.t("menu.Detrend by division (deselect for faster subtraction)"), divideNotSubtract);
         divideNotSubtractCB.addItemListener(e -> {
             if (e.getStateChange() == ItemEvent.DESELECTED) {
                 divideNotSubtract = false;
@@ -8011,7 +8012,7 @@ public class MultiPlot_ implements PlugIn, KeyListener {
         });
         preferencesmenu.add(divideNotSubtractCB);
 
-        useNelderMeadChi2ForDetrendCB = new JCheckBoxMenuItem("Detrend by NelderMead Chi^2 minimization (deselect for Regression)", useNelderMeadChi2ForDetrend);
+        useNelderMeadChi2ForDetrendCB = new JCheckBoxMenuItem(I18n.t("menu.Detrend by NelderMead Chi^2 minimization (deselect for Regression)"), useNelderMeadChi2ForDetrend);
         useNelderMeadChi2ForDetrendCB.addItemListener(e -> {
             if (e.getStateChange() == ItemEvent.DESELECTED) {
                 useNelderMeadChi2ForDetrend = false;
@@ -8025,7 +8026,7 @@ public class MultiPlot_ implements PlugIn, KeyListener {
 
         preferencesmenu.addSeparator();
 
-        showtooltipsCB = new JCheckBoxMenuItem("Show tooltips help", showToolTips);
+        showtooltipsCB = new JCheckBoxMenuItem(I18n.t("menu.Show tooltips help"), showToolTips);
         showtooltipsCB.addItemListener(e -> {
             if (e.getStateChange() == ItemEvent.DESELECTED) {
                 showToolTips = false;
@@ -8039,7 +8040,7 @@ public class MultiPlot_ implements PlugIn, KeyListener {
 
         preferencesmenu.addSeparator();
 
-        useBoldedDatumCB = new JCheckBoxMenuItem("Bold data point nearest mouse while holding shift", useBoldedDatum);
+        useBoldedDatumCB = new JCheckBoxMenuItem(I18n.t("menu.Bold data point nearest mouse while holding shift"), useBoldedDatum);
         useBoldedDatumCB.addItemListener(e -> {
             if (e.getStateChange() == ItemEvent.DESELECTED) {
                 useBoldedDatum = false;
@@ -8049,7 +8050,7 @@ public class MultiPlot_ implements PlugIn, KeyListener {
         });
         preferencesmenu.add(useBoldedDatumCB);
 
-        useUpdateStackCB = new JCheckBoxMenuItem("Display slice corresponding to point nearest mouse while holding shift", useUpdateStack);
+        useUpdateStackCB = new JCheckBoxMenuItem(I18n.t("menu.Display slice corresponding to point nearest mouse while holding shift"), useUpdateStack);
         useUpdateStackCB.addItemListener(e -> {
             if (e.getStateChange() == ItemEvent.DESELECTED) {
                 useUpdateStack = false;
@@ -8061,7 +8062,7 @@ public class MultiPlot_ implements PlugIn, KeyListener {
 
         preferencesmenu.addSeparator();
 
-        usePriorityColumnsCB = new JCheckBoxMenuItem("Show specified priority data names first in pulldown lists", prioritizeColumns);
+        usePriorityColumnsCB = new JCheckBoxMenuItem(I18n.t("menu.Show specified priority data names first in pulldown lists"), prioritizeColumns);
         usePriorityColumnsCB.addItemListener(e -> {
             if (e.getStateChange() == ItemEvent.DESELECTED) {
                 prioritizeColumns = false;
@@ -8072,13 +8073,13 @@ public class MultiPlot_ implements PlugIn, KeyListener {
         });
         preferencesmenu.add(usePriorityColumnsCB);
 
-        changePriorityColumnsmenuitem = new JMenuItem("Change priority data names list...");
+        changePriorityColumnsmenuitem = new JMenuItem(I18n.t("menu.Change priority data names list..."));
         changePriorityColumnsmenuitem.addActionListener(e -> changePriorityColumns());
         preferencesmenu.add(changePriorityColumnsmenuitem);
 
         preferencesmenu.addSeparator();
 
-        usepixelscaleCB = new JCheckBoxMenuItem("Use pixel scale when calculating distance", usePixelScale);
+        usepixelscaleCB = new JCheckBoxMenuItem(I18n.t("menu.Use pixel scale when calculating distance"), usePixelScale);
         usepixelscaleCB.addItemListener(e -> {
             if (e.getStateChange() == ItemEvent.DESELECTED) {
                 usePixelScale = false;
@@ -8088,7 +8089,7 @@ public class MultiPlot_ implements PlugIn, KeyListener {
         });
         preferencesmenu.add(usepixelscaleCB);
 
-        changepixelscalemenuitem = new JMenuItem("Set pixel scale (" + pixelScale + ")...");
+        changepixelscalemenuitem = new JMenuItem(I18n.t("menu.set_pixel_scale", pixelScale));
         changepixelscalemenuitem.addActionListener(e -> {
             changePixelScale();
             updatePlot(updateNoFits());
@@ -8097,7 +8098,7 @@ public class MultiPlot_ implements PlugIn, KeyListener {
 
         preferencesmenu.addSeparator();
 
-        var mirrorLogs = new JCheckBoxMenuItem("Mirror log window to aij.log", AIJLogger.MIRROR_LOGS_TO_FILE.get());
+        var mirrorLogs = new JCheckBoxMenuItem(I18n.t("menu.Mirror log window to aij.log"), AIJLogger.MIRROR_LOGS_TO_FILE.get());
         mirrorLogs.addItemListener(l -> {
             AIJLogger.MIRROR_LOGS_TO_FILE.set(l.getStateChange() == ItemEvent.SELECTED);
         });
@@ -8105,20 +8106,20 @@ public class MultiPlot_ implements PlugIn, KeyListener {
 
         preferencesmenu.addSeparator();
 
-        changemaxdatalengthmenuitem = new JMenuItem("Set minimum data column buffer length...");
+        changemaxdatalengthmenuitem = new JMenuItem(I18n.t("menu.Set minimum data column buffer length..."));
         changemaxdatalengthmenuitem.addActionListener(e -> {
             changeMaxDataLength();
             updatePlot(updateAllFits());
         });
         preferencesmenu.add(changemaxdatalengthmenuitem);
 
-        var optiThreadPrefs = new JMenuItem("Optimization Threading Preferences");
+        var optiThreadPrefs = new JMenuItem(I18n.t("menu.Optimization Threading Preferences"));
         optiThreadPrefs.addActionListener(e -> {
             FitOptimization.showThreadingPanel(mainFrame);
         });
         preferencesmenu.add(optiThreadPrefs);
 
-        usedefaultsettingsCB = new JCheckBoxMenuItem("Reset preferences to default settings (restart required)", useDefaultSettings);
+        usedefaultsettingsCB = new JCheckBoxMenuItem(I18n.t("menu.Reset preferences to default settings (restart required)"), useDefaultSettings);
         usedefaultsettingsCB.addItemListener(e -> {
             if (e.getStateChange() == ItemEvent.DESELECTED) {
                 useDefaultSettings = false;
@@ -8131,9 +8132,9 @@ public class MultiPlot_ implements PlugIn, KeyListener {
         mainmenubar.add(preferencesmenu);
 
 
-        tablemenu = new JMenu("Table    ");
+        tablemenu = new JMenu(I18n.t("menu.Table"));
 
-        runperiodogrammenuitem = new JMenuItem("Create Periodogram from table columns...");
+        runperiodogrammenuitem = new JMenuItem(I18n.t("menu.Create Periodogram from table columns..."));
         runperiodogrammenuitem.setToolTipText("<html>" + "Create a periodogram from columns in a measurements table.</html>");
         runperiodogrammenuitem.addActionListener(e -> {
             IJ.runPlugIn("Astronomy.Periodogram_", "");
@@ -8142,7 +8143,7 @@ public class MultiPlot_ implements PlugIn, KeyListener {
 
         tablemenu.addSeparator();
 
-        addnewcolsfromplotmenuitem = new JMenuItem("Add new data columns to table from plot...");
+        addnewcolsfromplotmenuitem = new JMenuItem(I18n.t("menu.Add new data columns to table from plot..."));
         addnewcolsfromplotmenuitem.setToolTipText("<html>" + "Add new data columns to the current active table from<br>" + "an enabled 'Multi-plot Y-data' plot row.</html>");
         addnewcolsfromplotmenuitem.addActionListener(e -> {
             int c = selectCurve();
@@ -8152,7 +8153,7 @@ public class MultiPlot_ implements PlugIn, KeyListener {
         });
         tablemenu.add(addnewcolsfromplotmenuitem);
 
-        addnewcolsfromastroCCmenuitem = new JMenuItem("Add new astronomical data columns to table...");
+        addnewcolsfromastroCCmenuitem = new JMenuItem(I18n.t("menu.Add new astronomical data columns to table..."));
         addnewcolsfromastroCCmenuitem.setToolTipText("<html>" + "Add new data columns to the current active table from AstroCC<br>" + "Cordinate Converter (airmass, alternate time formats, etc).</html>");
         addnewcolsfromastroCCmenuitem.addActionListener(e -> {
             if (addAstroDataFrame != null) {
@@ -8166,7 +8167,7 @@ public class MultiPlot_ implements PlugIn, KeyListener {
 
         tablemenu.addSeparator();
 
-        transposetablemenuitem = new JMenuItem("Transpose currently selected table");
+        transposetablemenuitem = new JMenuItem(I18n.t("menu.Transpose currently selected table"));
         transposetablemenuitem.setToolTipText("<html>" + "swap rows and columns in current active table" + "</html>");
         transposetablemenuitem.addActionListener(e -> transposeTable());
         tablemenu.add(transposetablemenuitem);
@@ -8174,9 +8175,9 @@ public class MultiPlot_ implements PlugIn, KeyListener {
         mainmenubar.add(tablemenu);
 
 
-        xaxismenu = new JMenu("X-axis    ");
+        xaxismenu = new JMenu(I18n.t("menu.X-axis"));
 
-        xTicsCB = new JCheckBoxMenuItem("Show X-axis tick marks", xTics);
+        xTicsCB = new JCheckBoxMenuItem(I18n.t("menu.Show X-axis tick marks"), xTics);
         xTicsCB.addItemListener(e -> {
             if (e.getStateChange() == ItemEvent.DESELECTED) {
                 xTics = false;
@@ -8186,7 +8187,7 @@ public class MultiPlot_ implements PlugIn, KeyListener {
         });
         xaxismenu.add(xTicsCB);
 
-        xGridCB = new JCheckBoxMenuItem("Show X-axis grid lines", xGrid);
+        xGridCB = new JCheckBoxMenuItem(I18n.t("menu.Show X-axis grid lines"), xGrid);
         xGridCB.addItemListener(e -> {
             if (e.getStateChange() == ItemEvent.DESELECTED) {
                 xGrid = false;
@@ -8196,7 +8197,7 @@ public class MultiPlot_ implements PlugIn, KeyListener {
         });
         xaxismenu.add(xGridCB);
 
-        xNumbersCB = new JCheckBoxMenuItem("Show X-axis numbers", xNumbers);
+        xNumbersCB = new JCheckBoxMenuItem(I18n.t("menu.Show X-axis numbers"), xNumbers);
         xNumbersCB.addItemListener(e -> {
             if (e.getStateChange() == ItemEvent.DESELECTED) {
                 xNumbers = false;
@@ -8206,7 +8207,7 @@ public class MultiPlot_ implements PlugIn, KeyListener {
         });
         xaxismenu.add(xNumbersCB);
 
-        var xDisplacementArrows = new JCheckBoxMenuItem("Draw offscreen displacement arrows: X", drawOffscreenDisplacementArrowsX.get());
+        var xDisplacementArrows = new JCheckBoxMenuItem(I18n.t("menu.Draw offscreen displacement arrows: X"), drawOffscreenDisplacementArrowsX.get());
         xDisplacementArrows.addItemListener(e -> {
             drawOffscreenDisplacementArrowsX.set(e.getStateChange() == ItemEvent.SELECTED);
             updatePlot(updateNoFits());
@@ -8216,9 +8217,9 @@ public class MultiPlot_ implements PlugIn, KeyListener {
         mainmenubar.add(xaxismenu);
 
 
-        yaxismenu = new JMenu("Y-axis    ");
+        yaxismenu = new JMenu(I18n.t("menu.Y-axis"));
 
-        yTicsCB = new JCheckBoxMenuItem("Show Y-axis tick marks", yTics);
+        yTicsCB = new JCheckBoxMenuItem(I18n.t("menu.Show Y-axis tick marks"), yTics);
         yTicsCB.addItemListener(e -> {
             if (e.getStateChange() == ItemEvent.DESELECTED) {
                 yTics = false;
@@ -8228,7 +8229,7 @@ public class MultiPlot_ implements PlugIn, KeyListener {
         });
         yaxismenu.add(yTicsCB);
 
-        yGridCB = new JCheckBoxMenuItem("Show Y-axis grid lines", yGrid);
+        yGridCB = new JCheckBoxMenuItem(I18n.t("menu.Show Y-axis grid lines"), yGrid);
         yGridCB.addItemListener(e -> {
             if (e.getStateChange() == ItemEvent.DESELECTED) {
                 yGrid = false;
@@ -8238,7 +8239,7 @@ public class MultiPlot_ implements PlugIn, KeyListener {
         });
         yaxismenu.add(yGridCB);
 
-        yNumbersCB = new JCheckBoxMenuItem("Show Y-axis numbers", yNumbers);
+        yNumbersCB = new JCheckBoxMenuItem(I18n.t("menu.Show Y-axis numbers"), yNumbers);
         yNumbersCB.addItemListener(e -> {
             if (e.getStateChange() == ItemEvent.DESELECTED) {
                 yNumbers = false;
@@ -8248,7 +8249,7 @@ public class MultiPlot_ implements PlugIn, KeyListener {
         });
         yaxismenu.add(yNumbersCB);
 
-        var yDisplacementArrows = new JCheckBoxMenuItem("Draw offscreen displacement arrows: Y", drawOffscreenDisplacementArrowsY.get());
+        var yDisplacementArrows = new JCheckBoxMenuItem(I18n.t("menu.Draw offscreen displacement arrows: Y"), drawOffscreenDisplacementArrowsY.get());
         yDisplacementArrows.addItemListener(e -> {
             drawOffscreenDisplacementArrowsY.set(e.getStateChange() == ItemEvent.SELECTED);
             updatePlot(updateNoFits());
@@ -8257,7 +8258,7 @@ public class MultiPlot_ implements PlugIn, KeyListener {
 
         yaxismenu.addSeparator();
 
-        JCheckBoxMenuItem invertyaxisCB = new JCheckBoxMenuItem("Invert Y-axis", invertYAxis);
+        JCheckBoxMenuItem invertyaxisCB = new JCheckBoxMenuItem(I18n.t("menu.Invert Y-axis"), invertYAxis);
         invertyaxisCB.addItemListener(e -> {
             if (e.getStateChange() == ItemEvent.DESELECTED) {
                 invertYAxis = false;
@@ -8278,7 +8279,7 @@ public class MultiPlot_ implements PlugIn, KeyListener {
         });
         yaxismenu.add(invertyaxisCB);
 
-        JCheckBoxMenuItem negateMagCB = new JCheckBoxMenuItem("Negate relative magnitude calculations", negateMag);
+        JCheckBoxMenuItem negateMagCB = new JCheckBoxMenuItem(I18n.t("menu.Negate relative magnitude calculations"), negateMag);
         negateMagCB.addItemListener(e -> {
             if (e.getStateChange() == ItemEvent.DESELECTED) {
                 negateMag = false;
@@ -8290,22 +8291,22 @@ public class MultiPlot_ implements PlugIn, KeyListener {
 
         mainmenubar.add(yaxismenu);
 
-        var display = new JMenu("Style");
-        var size = new JMenuItem("Symbol size");
+        var display = new JMenu(I18n.t("menu.Style"));
+        var size = new JMenuItem(I18n.t("menu.Symbol size"));
         size.addActionListener(_ -> changeDisplaySettings());
         display.add(size);
         mainmenubar.add(display);
 
-        JMenu helpmenu = new JMenu("Help");
-        JMenuItem helpmenuitem = new JMenuItem("General help...");
+        JMenu helpmenu = new JMenu(I18n.t("menu.Help"));
+        JMenuItem helpmenuitem = new JMenuItem(I18n.t("menu.General help..."));
         helpmenuitem.addActionListener(e -> openHelpPanel());
         helpmenu.add(helpmenuitem);
 
-        JMenuItem helpdatamenuitem = new JMenuItem("Data naming convention...");
+        JMenuItem helpdatamenuitem = new JMenuItem(I18n.t("menu.Data naming convention..."));
         helpdatamenuitem.addActionListener(e -> openDataHelpPanel());
         helpmenu.add(helpdatamenuitem);
 
-        JMenuItem helphelpPlotWindowmenuitem = new JMenuItem("Plot Window Help...");
+        JMenuItem helphelpPlotWindowmenuitem = new JMenuItem(I18n.t("menu.Plot Window Help..."));
         helphelpPlotWindowmenuitem.addActionListener(e -> {
             String filename = "help/plotwindow_help.html";
             new HelpPanel(filename, "Plot").setVisible(true);
@@ -8978,7 +8979,7 @@ public class MultiPlot_ implements PlugIn, KeyListener {
         // LEGEND LABEL POPUP
 
         legendpopup = new JPopupMenu();
-        JMenuItem legendshowscalingCB = new JCheckBoxMenuItem("Append scaling factor to legend for absolute curves", showLScaleInfo);
+        JMenuItem legendshowscalingCB = new JCheckBoxMenuItem(I18n.t("menu.Append scaling factor to legend for absolute curves"), showLScaleInfo);
         legendshowscalingCB.addItemListener(e -> {
             if (e.getStateChange() == ItemEvent.DESELECTED) {
                 showLScaleInfo = false;
@@ -8986,7 +8987,7 @@ public class MultiPlot_ implements PlugIn, KeyListener {
             updatePlot(updateNoFits());
         });
         legendpopup.add(legendshowscalingCB);
-        JMenuItem legendshowrelscalingCB = new JCheckBoxMenuItem("Append scaling factor to legend for relative curves", showLRelScaleInfo);
+        JMenuItem legendshowrelscalingCB = new JCheckBoxMenuItem(I18n.t("menu.Append scaling factor to legend for relative curves"), showLRelScaleInfo);
         legendshowrelscalingCB.addItemListener(e -> {
             if (e.getStateChange() == ItemEvent.DESELECTED) {
                 showLRelScaleInfo = false;
@@ -8994,7 +8995,7 @@ public class MultiPlot_ implements PlugIn, KeyListener {
             updatePlot(updateNoFits());
         });
         legendpopup.add(legendshowrelscalingCB);
-        JMenuItem legendshowshiftCB = new JCheckBoxMenuItem("Append shift factor to legend for absolute curves", showLShiftInfo);
+        JMenuItem legendshowshiftCB = new JCheckBoxMenuItem(I18n.t("menu.Append shift factor to legend for absolute curves"), showLShiftInfo);
         legendshowshiftCB.addItemListener(e -> {
             if (e.getStateChange() == ItemEvent.DESELECTED) {
                 showLShiftInfo = false;
@@ -9002,7 +9003,7 @@ public class MultiPlot_ implements PlugIn, KeyListener {
             updatePlot(updateNoFits());
         });
         legendpopup.add(legendshowshiftCB);
-        JMenuItem legendshowrelshiftCB = new JCheckBoxMenuItem("Append shift factor to legend for relative curves", showLRelShiftInfo);
+        JMenuItem legendshowrelshiftCB = new JCheckBoxMenuItem(I18n.t("menu.Append shift factor to legend for relative curves"), showLRelShiftInfo);
         legendshowrelshiftCB.addItemListener(e -> {
             if (e.getStateChange() == ItemEvent.DESELECTED) {
                 showLRelShiftInfo = false;
@@ -9010,7 +9011,7 @@ public class MultiPlot_ implements PlugIn, KeyListener {
             updatePlot(updateNoFits());
         });
         legendpopup.add(legendshowrelshiftCB);
-        JMenuItem legendshowdetrendCB = new JCheckBoxMenuItem("Append detrend usage to legend", showLdetrendInfo);
+        JMenuItem legendshowdetrendCB = new JCheckBoxMenuItem(I18n.t("menu.Append detrend usage to legend"), showLdetrendInfo);
         legendshowdetrendCB.addItemListener(e -> {
             if (e.getStateChange() == ItemEvent.DESELECTED) {
                 showLdetrendInfo = false;
@@ -9018,7 +9019,7 @@ public class MultiPlot_ implements PlugIn, KeyListener {
             updatePlot(updateNoFits());
         });
         legendpopup.add(legendshowdetrendCB);
-        JMenuItem legendshownormCB = new JCheckBoxMenuItem("Append normalize usage to legend", showLnormInfo);
+        JMenuItem legendshownormCB = new JCheckBoxMenuItem(I18n.t("menu.Append normalize usage to legend"), showLnormInfo);
         legendshownormCB.addItemListener(e -> {
             if (e.getStateChange() == ItemEvent.DESELECTED) {
                 showLnormInfo = false;
@@ -9026,7 +9027,7 @@ public class MultiPlot_ implements PlugIn, KeyListener {
             updatePlot(updateNoFits());
         });
         legendpopup.add(legendshownormCB);
-        JMenuItem legendshowmmagCB = new JCheckBoxMenuItem("Append magnitude usage to legend", showLmmagInfo);
+        JMenuItem legendshowmmagCB = new JCheckBoxMenuItem(I18n.t("menu.Append magnitude usage to legend"), showLmmagInfo);
         legendshowmmagCB.addItemListener(e -> {
             if (e.getStateChange() == ItemEvent.DESELECTED) {
                 showLmmagInfo = false;
@@ -9035,7 +9036,7 @@ public class MultiPlot_ implements PlugIn, KeyListener {
         });
         legendpopup.add(legendshowmmagCB);
 
-        JMenuItem legendshowsigmadetrendCB = new JCheckBoxMenuItem("Append Std. Dev. to legend for detrended absolute curves", showSigmaForDetrendedCurves);
+        JMenuItem legendshowsigmadetrendCB = new JCheckBoxMenuItem(I18n.t("menu.Append Std. Dev. to legend for detrended absolute curves"), showSigmaForDetrendedCurves);
         legendshowsigmadetrendCB.addItemListener(e -> {
             if (e.getStateChange() == ItemEvent.DESELECTED) {
                 showSigmaForDetrendedCurves = false;
@@ -9044,7 +9045,7 @@ public class MultiPlot_ implements PlugIn, KeyListener {
         });
         legendpopup.add(legendshowsigmadetrendCB);
 
-        JMenuItem legendshowsigmaallCB = new JCheckBoxMenuItem("Append Std. Dev. to legend for all absolute curves", showSigmaForAllCurves);
+        JMenuItem legendshowsigmaallCB = new JCheckBoxMenuItem(I18n.t("menu.Append Std. Dev. to legend for all absolute curves"), showSigmaForAllCurves);
         legendshowsigmaallCB.addItemListener(e -> {
             if (e.getStateChange() == ItemEvent.DESELECTED) {
                 showSigmaForAllCurves = false;
@@ -9053,7 +9054,7 @@ public class MultiPlot_ implements PlugIn, KeyListener {
         });
         legendpopup.add(legendshowsigmaallCB);
 
-        JMenuItem legendShowOutbinCB = new JCheckBoxMenuItem("Append output binned Std. Dev. to legend", showOutBinRms);
+        JMenuItem legendShowOutbinCB = new JCheckBoxMenuItem(I18n.t("menu.Append output binned Std. Dev. to legend"), showOutBinRms);
         legendShowOutbinCB.addItemListener(e -> {
             if (e.getStateChange() == ItemEvent.DESELECTED) {
                 showOutBinRms = false;
@@ -9062,7 +9063,7 @@ public class MultiPlot_ implements PlugIn, KeyListener {
         });
         legendpopup.add(legendShowOutbinCB);
 
-        JMenuItem legendShowInputAvgSizeCB = new JCheckBoxMenuItem("Append averaged data size to legend", showLAvgInfo);
+        JMenuItem legendShowInputAvgSizeCB = new JCheckBoxMenuItem(I18n.t("menu.Append averaged data size to legend"), showLAvgInfo);
         legendShowInputAvgSizeCB.addItemListener(e -> {
             if (e.getStateChange() == ItemEvent.DESELECTED) {
                 showLAvgInfo = false;
@@ -9070,7 +9071,7 @@ public class MultiPlot_ implements PlugIn, KeyListener {
             updatePlot(updateNoFits());
         });
         legendpopup.add(legendShowInputAvgSizeCB);
-        JMenuItem legendshowsymbolCB = new JCheckBoxMenuItem("Append symbol description to legend", showLSymbolInfo);
+        JMenuItem legendshowsymbolCB = new JCheckBoxMenuItem(I18n.t("menu.Append symbol description to legend"), showLSymbolInfo);
         legendshowsymbolCB.addItemListener(e -> {
             if (e.getStateChange() == ItemEvent.DESELECTED) {
                 showLSymbolInfo = false;
@@ -9242,7 +9243,7 @@ public class MultiPlot_ implements PlugIn, KeyListener {
         // X-AXIS LABEL POPUP
 
         xaxispopup = new JPopupMenu();
-        JMenuItem showxscalingCB = new JCheckBoxMenuItem("Append scaling factor to X-axis label", showXScaleInfo);
+        JMenuItem showxscalingCB = new JCheckBoxMenuItem(I18n.t("menu.Append scaling factor to X-axis label"), showXScaleInfo);
 
         showxscalingCB.addItemListener(e -> {
             if (e.getStateChange() == ItemEvent.DESELECTED) {
@@ -9349,7 +9350,7 @@ public class MultiPlot_ implements PlugIn, KeyListener {
         // Y-AXIS LABEL POPUP
 
         yaxispopup = new JPopupMenu();
-        JMenuItem showyscalingCB = new JCheckBoxMenuItem("Append scaling factor to Y-axis label", showYScaleInfo);
+        JMenuItem showyscalingCB = new JCheckBoxMenuItem(I18n.t("menu.Append scaling factor to Y-axis label"), showYScaleInfo);
         showyscalingCB.addItemListener(e -> {
             if (e.getStateChange() == ItemEvent.DESELECTED) {
                 showYScaleInfo = false;
@@ -9357,7 +9358,7 @@ public class MultiPlot_ implements PlugIn, KeyListener {
             updatePlot(updateNoFits());
         });
         yaxispopup.add(showyscalingCB);
-        JMenuItem showyshiftCB = new JCheckBoxMenuItem("Append shift factor to Y-axis label", showYShiftInfo);
+        JMenuItem showyshiftCB = new JCheckBoxMenuItem(I18n.t("menu.Append shift factor to Y-axis label"), showYShiftInfo);
         showyshiftCB.addItemListener(e -> {
             if (e.getStateChange() == ItemEvent.DESELECTED) {
                 showYShiftInfo = false;
@@ -9366,7 +9367,7 @@ public class MultiPlot_ implements PlugIn, KeyListener {
         });
         yaxispopup.add(showyshiftCB);
 
-        JMenuItem showynormCB = new JCheckBoxMenuItem("Append normalization usage to Y-axis label", showYNormInfo);
+        JMenuItem showynormCB = new JCheckBoxMenuItem(I18n.t("menu.Append normalization usage to Y-axis label"), showYNormInfo);
         showynormCB.addItemListener(e -> {
             if (e.getStateChange() == ItemEvent.DESELECTED) {
                 showYNormInfo = false;
@@ -9375,7 +9376,7 @@ public class MultiPlot_ implements PlugIn, KeyListener {
         });
         yaxispopup.add(showynormCB);
 
-        JMenuItem showymmagCB = new JCheckBoxMenuItem("Append magnitude usage to Y-axis label", showYmmagInfo);
+        JMenuItem showymmagCB = new JCheckBoxMenuItem(I18n.t("menu.Append magnitude usage to Y-axis label"), showYmmagInfo);
         showymmagCB.addItemListener(e -> {
             if (e.getStateChange() == ItemEvent.DESELECTED) {
                 showYmmagInfo = false;
@@ -9384,7 +9385,7 @@ public class MultiPlot_ implements PlugIn, KeyListener {
         });
         yaxispopup.add(showymmagCB);
 
-        JMenuItem showYInputAvgCB = new JCheckBoxMenuItem("Append averaged data size to Y-axis label", showYAvgInfo);
+        JMenuItem showYInputAvgCB = new JCheckBoxMenuItem(I18n.t("menu.Append averaged data size to Y-axis label"), showYAvgInfo);
         showYInputAvgCB.addItemListener(e -> {
             if (e.getStateChange() == ItemEvent.DESELECTED) {
                 showYAvgInfo = false;
@@ -9393,7 +9394,7 @@ public class MultiPlot_ implements PlugIn, KeyListener {
         });
         yaxispopup.add(showYInputAvgCB);
 
-        JMenuItem showysymbolCB = new JCheckBoxMenuItem("Append symbol description to Y-axis label", showYSymbolInfo);
+        JMenuItem showysymbolCB = new JCheckBoxMenuItem(I18n.t("menu.Append symbol description to Y-axis label"), showYSymbolInfo);
         showysymbolCB.addItemListener(e -> {
             if (e.getStateChange() == ItemEvent.DESELECTED) {
                 showYSymbolInfo = false;
@@ -13105,9 +13106,9 @@ public class MultiPlot_ implements PlugIn, KeyListener {
         fitPanel[c].setBorder(BorderFactory.createTitledBorder(BorderFactory.createLineBorder(color[c], 2), table == null ? "No Table Selected" : ylabel[c].trim().equals("") ? "No Data Column Selected" : ylabel[c], TitledBorder.CENTER, TitledBorder.TOP, b12, Color.darkGray));
 
         fitMenuBar[c] = new JMenuBar();
-        fitFileMenu[c] = new JMenu("File    ");
+        fitFileMenu[c] = new JMenu(I18n.t("menu.File"));
 
-        saveFitPanelPngMenuItem[c] = new JMenuItem("Save image of fit panel as PNG file");
+        saveFitPanelPngMenuItem[c] = new JMenuItem(I18n.t("menu.Save image of fit panel as PNG file"));
         saveFitPanelPngMenuItem[c].addActionListener(e -> {
             String filename = table != null ? MeasurementTable.shorterName(table.shortTitle()) : "No_Table_Data";
             int location = filename.lastIndexOf('.');
@@ -13127,7 +13128,7 @@ public class MultiPlot_ implements PlugIn, KeyListener {
         });
         fitFileMenu[c].add(saveFitPanelPngMenuItem[c]);
 
-        saveFitPanelJpgMenuItem[c] = new JMenuItem("Save image of fit panel as JPG file");
+        saveFitPanelJpgMenuItem[c] = new JMenuItem(I18n.t("menu.Save image of fit panel as JPG file"));
         saveFitPanelJpgMenuItem[c].addActionListener(e -> {
             String filename = table != null ? MeasurementTable.shorterName(table.shortTitle()) : "No_Table_Data";
             int location = filename.lastIndexOf('.');
@@ -13149,15 +13150,15 @@ public class MultiPlot_ implements PlugIn, KeyListener {
 
         fitFileMenu[c].addSeparator();
 
-        saveFitTextMenuItem[c] = new JMenuItem("Save fit results as text file");
+        saveFitTextMenuItem[c] = new JMenuItem(I18n.t("menu.Save fit results as text file"));
         saveFitTextMenuItem[c].addActionListener(e -> saveFitPanelToTextFileDialog(null, c));
         fitFileMenu[c].add(saveFitTextMenuItem[c]);
 
 
-        autoPriorsMenu[c] = new JMenu("Auto Priors    ");
+        autoPriorsMenu[c] = new JMenu(I18n.t("menu.Auto Priors"));
 
 
-        baselinePriorCB[c] = new JCheckBoxMenuItem("Include baseline in auto prior update", autoUpdatePrior[c][0]);
+        baselinePriorCB[c] = new JCheckBoxMenuItem(I18n.t("menu.Include baseline in auto prior update"), autoUpdatePrior[c][0]);
         baselinePriorCB[c].addItemListener(e -> {
             autoUpdatePrior[c][0] = e.getStateChange() == ItemEvent.SELECTED;
             enableTransitComponents(c);
@@ -13166,7 +13167,7 @@ public class MultiPlot_ implements PlugIn, KeyListener {
         });
         autoPriorsMenu[c].add(baselinePriorCB[c]);
 
-        depthPriorCB[c] = new JCheckBoxMenuItem("Include transit depth in auto prior update", autoUpdatePrior[c][1]);
+        depthPriorCB[c] = new JCheckBoxMenuItem(I18n.t("menu.Include transit depth in auto prior update"), autoUpdatePrior[c][1]);
         depthPriorCB[c].addItemListener(e -> {
             autoUpdatePrior[c][1] = e.getStateChange() == ItemEvent.SELECTED;
             enableTransitComponents(c);
@@ -13175,7 +13176,7 @@ public class MultiPlot_ implements PlugIn, KeyListener {
         });
         autoPriorsMenu[c].add(depthPriorCB[c]);
 
-        arPriorCB[c] = new JCheckBoxMenuItem("Include a/R* in auto prior update", autoUpdatePrior[c][2]);
+        arPriorCB[c] = new JCheckBoxMenuItem(I18n.t("menu.Include a/R* in auto prior update"), autoUpdatePrior[c][2]);
         arPriorCB[c].addItemListener(e -> {
             autoUpdatePrior[c][2] = e.getStateChange() == ItemEvent.SELECTED;
             enableTransitComponents(c);
@@ -13184,7 +13185,7 @@ public class MultiPlot_ implements PlugIn, KeyListener {
         });
         autoPriorsMenu[c].add(arPriorCB[c]);
 
-        tcPriorCB[c] = new JCheckBoxMenuItem("Include transit center time in auto prior update", autoUpdatePrior[c][3]);
+        tcPriorCB[c] = new JCheckBoxMenuItem(I18n.t("menu.Include transit center time in auto prior update"), autoUpdatePrior[c][3]);
         tcPriorCB[c].addItemListener(e -> {
             autoUpdatePrior[c][3] = e.getStateChange() == ItemEvent.SELECTED;
             enableTransitComponents(c);
@@ -13193,7 +13194,7 @@ public class MultiPlot_ implements PlugIn, KeyListener {
         });
         autoPriorsMenu[c].add(tcPriorCB[c]);
 
-        inclPriorCB[c] = new JCheckBoxMenuItem("Include transit inclination in auto prior update", autoUpdatePrior[c][4]);
+        inclPriorCB[c] = new JCheckBoxMenuItem(I18n.t("menu.Include transit inclination in auto prior update"), autoUpdatePrior[c][4]);
         inclPriorCB[c].addItemListener(e -> {
             autoUpdatePrior[c][4] = e.getStateChange() == ItemEvent.SELECTED;
             enableTransitComponents(c);

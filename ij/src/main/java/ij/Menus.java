@@ -148,7 +148,7 @@ public class Menus {
 		addPlugInItem(openSamples, "Cache Sample Images ", "ij.plugin.URLOpener(\"cache\")", 0, false);
 		addOpenRecentSubMenu(file);
 		Menu importMenu = getMenu("File>Import", true);		
-		Menu showFolderMenu = new Menu("Show Folder");
+		Menu showFolderMenu = localizedMenu("Show Folder");
 		fixFontSize(showFolderMenu);
 		file.add(showFolderMenu);
 		addPlugInItem(showFolderMenu, "Image", "ij.plugin.SimpleCommands(\"showdirImage\")", 0, false);
@@ -321,8 +321,8 @@ public class Menus {
 
 	@AstroImageJ(reason = "Remove python", modified = true)
 	public static Menu getExamplesMenu(ActionListener listener) {
-		Menu menu = new Menu("Examples");
-		Menu submenu = new Menu("Plots");
+		Menu menu = localizedMenu("Examples");
+		Menu submenu = localizedMenu("Plots");
 		addExample(submenu, "Example Plot", "Example_Plot_.ijm");
 		addExample(submenu, "Semi-log Plot", "Semi-log_Plot_.ijm");
 		addExample(submenu, "Arrow Plot", "Arrow_Plot_.ijm");
@@ -340,7 +340,7 @@ public class Menus {
 		submenu.addActionListener(listener);
 		menu.add(submenu);
 		
-		submenu = new Menu("Tools");
+		submenu = localizedMenu("Tools");
 		addExample(submenu, "Annular Selection", "Annular_Selection_Tool.ijm");		
 		addExample(submenu, "Big Cursor", "Big_Cursor_Tool.ijm");		
 		addExample(submenu, "Circle Tool", "Circle_Tool.ijm");
@@ -350,7 +350,7 @@ public class Menus {
 		submenu.addActionListener(listener);
 		menu.add(submenu);
 
-		submenu = new Menu("Macro");
+		submenu = localizedMenu("Macro");
 		addExample(submenu, "Sphere", "Sphere.ijm");
 		addExample(submenu, "Dialog Box", "Dialog_Box.ijm");
 		addExample(submenu, "Process Folder", "Batch_Process_Folder.ijm");
@@ -373,7 +373,7 @@ public class Menus {
 		submenu.addActionListener(listener);
 		menu.add(submenu);
 
-		submenu = new Menu("JavaScript");
+		submenu = localizedMenu("JavaScript");
 		addExample(submenu, "Sphere", "Sphere.js");
 		addExample(submenu, "Plasma Cloud", "Plasma_Cloud.js");
 		addExample(submenu, "Cloud Debugger", "Cloud_Debugger.js");
@@ -406,7 +406,7 @@ public class Menus {
 		addExample(submenu, "Dialog Demo", "Dialog_Demo.js");
 		submenu.addActionListener(listener);
 		menu.add(submenu);
-		submenu = new Menu("BeanShell");
+		submenu = localizedMenu("BeanShell");
 		addExample(submenu, "Sphere", "Sphere.bsh");
 		addExample(submenu, "Example Plot", "Example_Plot.bsh");
 		addExample(submenu, "Semi-log Plot", "Semi-log_Plot.bsh");
@@ -414,14 +414,14 @@ public class Menus {
 		addExample(submenu, "Sine/Cosine Table", "Sine_Cosine_Table.bsh");
 		submenu.addActionListener(listener);
 		menu.add(submenu);
-		/*submenu = new Menu("Python");
+		/*submenu = localizedMenu("Python");
 		addExample(submenu, "Sphere", "Sphere.py");
 		addExample(submenu, "Animated Gaussian Blur", "Animated_Gaussian_Blur.py");
 		addExample(submenu, "Spiral Rotation", "Spiral_Rotation.py");
 		addExample(submenu, "Overlay", "Overlay.py");
 		submenu.addActionListener(listener);
 		menu.add(submenu);*/
-		submenu = new Menu("Java");
+		submenu = localizedMenu("Java");
 		addExample(submenu, "Sphere", "Sphere_.java");
 		addExample(submenu, "Plasma Cloud", "Plasma_Cloud.java");
 		addExample(submenu, "Gamma Adjuster", "Gamma_Adjuster.java");
@@ -459,21 +459,31 @@ public class Menus {
 		menu.add(openRecentMenu);
 	}
 
+	/** Create a Menu whose displayed label is localized via the "ijmenu.<englishName>" key. */
+	static Menu localizedMenu(String englishName) {
+		String shown = I18n.t("ijmenu." + englishName);
+		if (shown.equals("ijmenu." + englishName)) shown = englishName;
+		return new Menu(shown);
+	}
+
 	static void addItem(Menu menu, String label, int shortcut, boolean shift) {
 		if (menu==null)
 			return;
 		MenuItem item;
+		String shown = I18n.t("ijmenu." + label);
+		if (shown.equals("ijmenu." + label)) shown = label;
 		if (shortcut==0)
-			item = new MenuItem(label);
+			item = new MenuItem(shown);
 		else {
 			if (shift) {
-				item = new MenuItem(label, new MenuShortcut(shortcut, true));
+				item = new MenuItem(shown, new MenuShortcut(shortcut, true));
 				shortcuts.put(Integer.valueOf(shortcut+200),label);
 			} else {
-				item = new MenuItem(label, new MenuShortcut(shortcut));
+				item = new MenuItem(shown, new MenuShortcut(shortcut));
 				shortcuts.put(Integer.valueOf(shortcut),label);
 			}
 		}
+		item.setActionCommand(label);
 		if (addSorted) {
 			if (menu==pluginsMenu)
 				addItemSorted(menu, item, userPluginsIndex);
@@ -494,7 +504,10 @@ public class Menus {
 	CheckboxMenuItem addCheckboxItem(Menu menu, String label, String className) {
 		pluginsTable.put(label, className);
 		nPlugins++;
-		CheckboxMenuItem item = new CheckboxMenuItem(label);
+		String shown = I18n.t("ijmenu." + label);
+		if (shown.equals("ijmenu." + label)) shown = label;
+		CheckboxMenuItem item = new CheckboxMenuItem(shown);
+		item.setActionCommand(label);
 		menu.add(item);
 		item.addItemListener(ij);
 		item.setState(false);
@@ -505,7 +518,11 @@ public class Menus {
 		String value;
 		String key = name.toLowerCase(Locale.US);
 		int index;
- 		Menu submenu=new Menu(name.replace('_', ' '));
+		String displayName = name.replace('_', ' ');
+		String lookupKey = displayName.trim();
+		String shown = I18n.t("ijmenu." + lookupKey);
+		if (!shown.equals("ijmenu." + lookupKey)) displayName = shown;
+ 		Menu submenu=new Menu(displayName);
 		index = key.indexOf(' ');
 		if (index>0)
 			key = key.substring(0, index);
@@ -930,6 +947,8 @@ public class Menus {
 			int offset = menuName.lastIndexOf('>');
 			if (offset < 0) {
 				result = new Menu(menuName);
+				String shownTop = I18n.t("ijmenu." + menuName);
+				if (!shownTop.equals("ijmenu." + menuName)) result.setLabel(shownTop);
 				if (mbar == null)
 					mbar = new MenuBar();
 				if (menuName.equals("Help"))
@@ -945,9 +964,14 @@ public class Menus {
 				String menuItemName = menuName.substring(offset + 1);
 				Menu parentMenu = getMenu(parentName);
 				result = new Menu(menuItemName);
+				String shownSub = I18n.t("ijmenu." + menuName);
+				if (!shownSub.equals("ijmenu." + menuName)) result.setLabel(shownSub);
 				addPluginSeparatorIfNeeded(parentMenu);
-				if (readFromProps)
+				if (readFromProps) {
 					result = addSubMenu(parentMenu, menuItemName);
+					String shownProps = I18n.t("ijmenu." + menuName);
+					if (!shownProps.equals("ijmenu." + menuName)) result.setLabel(shownProps);
+				}
 				else if (parentName.startsWith("Plugins") && menuSeparators != null)
 					addItemSorted(parentMenu, result, parentName.equals("Plugins")?userPluginsIndex:0);
 				else
@@ -1252,7 +1276,10 @@ public class Menus {
 
 		if (!force && itemExists)  // duplicate command?
 			command = command + " Plugin";
-		MenuItem item = new MenuItem(command);
+		String shownCmd = I18n.t("ijmenu." + command);
+		if (shownCmd.equals("ijmenu." + command)) shownCmd = command;
+		MenuItem item = new MenuItem(shownCmd);
+		item.setActionCommand(command);
 		if (force)
 			addItemSorted(menu,item,0);
 		else
@@ -1277,7 +1304,10 @@ public class Menus {
 			if (s.equals("-"))
 				popup.addSeparator();
 			else if (!s.equals("")) {
-				mi = new MenuItem(s);
+				String shownP = I18n.t("ijmenu." + s);
+				if (shownP.equals("ijmenu." + s)) shownP = s;
+				mi = new MenuItem(shownP);
+				mi.setActionCommand(s);
 				mi.addActionListener(ij);
 				popup.add(mi);
 			}

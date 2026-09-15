@@ -14,6 +14,7 @@ import astroj.AstroStackWindow;
 import astroj.FitsJ;
 import astroj.IJU;
 import astroj.WCS;
+import ij.I18n;
 import ij.IJ;
 import ij.ImagePlus;
 import ij.ImageStack;
@@ -41,7 +42,7 @@ public class PhotometricDebayer implements ExtendedPlugInFilter {
             Recorder.setCommand("Photometric Debayer");
         }
 
-        var gd = new GenericSwingDialog("Photometric Debayer");
+        var gd = new GenericSwingDialog(I18n.t("debayer.title"));
 
         AtomicReference<Pallete> pallet = new AtomicReference<>(Pallete.RGGB);
 
@@ -67,9 +68,9 @@ public class PhotometricDebayer implements ExtendedPlugInFilter {
             settings.add(b -> enabledColors.put(Color.values()[finalI], b));
         }
 
-        gd.addChoice("Subpixel arrangement", Pallete.names(), pallet.get().name(),
+        gd.addChoice(I18n.t("debayer.arrangement"), Pallete.names(), pallet.get().name(),
                 (s) -> pallet.set(Pallete.valueOf(s)));
-        gd.addMessage("Output images:");
+        gd.addMessage(I18n.t("debayer.output"));
         gd.addCheckboxGroup((Color.values().length/2) + 1, 2, options, defaults, settings);
         gd.centerDialog(true);
         gd.showDialog();
@@ -95,7 +96,7 @@ public class PhotometricDebayer implements ExtendedPlugInFilter {
                         }
                     }
                 } else {
-                    IJ.showMessage("Virtual stack debayering complete.\nAligned images are saved in subdirectory 'debayered'.");
+                    IJ.showMessage(I18n.t("debayer.vstack_done"));
                 }
             }
         } catch (Exception e) {
@@ -126,7 +127,7 @@ public class PhotometricDebayer implements ExtendedPlugInFilter {
                 dir.mkdir();
             } else if (dir.isFile()) {
                 IJ.beep();
-                IJ.showMessage("A file named 'debayered' in the stack directory is blocking the creation of the sub-directory.");
+                IJ.showMessage(I18n.t("debayer.blocked"));
                 return DONE;
             }
             virtualDebayerFolder = imageDir;

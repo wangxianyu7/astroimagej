@@ -13,6 +13,7 @@ import java.util.ArrayList;
 import java.util.Properties;
 import java.util.Vector;
 
+import ij.I18n;
 import ij.IJ;
 import ij.ImagePlus;
 import ij.ImageStack;
@@ -646,18 +647,18 @@ public class FolderOpener implements PlugIn, TextListener {
 			countStr = names!=null?""+names.length:"---";
 		} else
 			directory = Prefs.get(DIR_KEY, IJ.getDir("downloads")+"stack/");
-		GenericDialog gd = new GenericDialog("Import Image Sequence");
+		GenericDialog gd = new GenericDialog(I18n.t("seq.title"));
 		gd.setInsets(5, 0, 0);
-		gd.addDirectoryField("Dir:", directory);		
+		gd.addDirectoryField(I18n.t("seq.dir"), directory);
 		gd.setInsets(2, 55, 10);
-		gd.addMessage("drag and drop target", IJ.font10, Color.darkGray);
-		gd.addChoice("Type:", types, bitDepthToType(bitDepth));
-		gd.addStringField("Filter:", "", 10);
+		gd.addMessage(I18n.t("seq.dnd"), IJ.font10, Color.darkGray);
+		gd.addChoice(I18n.t("seq.type"), types, bitDepthToType(bitDepth));
+		gd.addStringField(I18n.t("seq.filter"), "", 10);
 		gd.setInsets(0,55,0);
-		gd.addMessage("file name filtering text (can also enclose regex in parens)", IJ.font10, Color.darkGray);
-		gd.addNumericField("Start:", this.start, 0, 6, "");
-		gd.addStringField("Count:", countStr, 6);
-		gd.addNumericField("Step:", this.step, 0, 6, "");
+		gd.addMessage(I18n.t("seq.filter_hint"), IJ.font10, Color.darkGray);
+		gd.addNumericField(I18n.t("seq.start"), this.start, 0, 6, "");
+		gd.addStringField(I18n.t("seq.count"), countStr, 6);
+		gd.addNumericField(I18n.t("seq.step"), this.step, 0, 6, "");
 		if (!IJ.isMacro() && !GraphicsEnvironment.isHeadless()) {
 			Vector v = gd.getStringFields();
 			dirField = (TextField)v.elementAt(0);
@@ -671,40 +672,40 @@ public class FolderOpener implements PlugIn, TextListener {
 			stepField = (TextField)v.elementAt(1);
 			stepField.addTextListener(this);
 		}
-		gd.addNumericField("Scale:", this.scale, 0, 6, "%");
+		gd.addNumericField(I18n.t("seq.scale"), this.scale, 0, 6, "%");
 
-		gd.addMessage("Filter based on FITS header keywords and values:");
-		gd.addMessage("(filtering not accounted for in file count and stack size below)", IJ.font10, Color.darkGray);
-		gd.addStringField("Keyword 1:", "");
+		gd.addMessage(I18n.t("seq.fits_filter"));
+		gd.addMessage(I18n.t("seq.fits_filter_hint"), IJ.font10, Color.darkGray);
+		gd.addStringField(I18n.t("seq.keyword1"), "");
 		gd.addToSameRow();
-		gd.addStringField("Value 1:", "");
+		gd.addStringField(I18n.t("seq.value1"), "");
 		gd.addRadioButtonGroup("", new String[]{"AND", "OR"}, 1, 2, "AND");
 		gd.addToSameRow();
-		gd.addMessage("(blank Keyword and Value boxes are ignored)");
-		gd.addStringField("Keyword 2:", "");
+		gd.addMessage(I18n.t("seq.blank_ignored"));
+		gd.addStringField(I18n.t("seq.keyword2"), "");
 		gd.addToSameRow();
-		gd.addStringField("Value 2:", "");
+		gd.addStringField(I18n.t("seq.value2"), "");
 
-		gd.addCheckbox("Sort names numerically", sortFileNames);
-		gd.addCheckbox("Generate WCS Common Region", AUTOMATIC_WCS_SHAPE_GENERATION.get());
-		gd.addCheckbox("Use virtual stack", Prefs.get("folderopener.openAsVirtualStack", openAsVirtualStack));
-		gd.addCheckbox("Open as separate images", false);		
+		gd.addCheckbox(I18n.t("seq.sort"), sortFileNames);
+		gd.addCheckbox(I18n.t("seq.gen_wcs"), AUTOMATIC_WCS_SHAPE_GENERATION.get());
+		gd.addCheckbox(I18n.t("seq.virtual"), Prefs.get("folderopener.openAsVirtualStack", openAsVirtualStack));
+		gd.addCheckbox(I18n.t("seq.separate"), false);
 		gd.addHelp(IJ.URL2+"/docs/menus/file.html#seq1");
 
 		// Add display of stack size
 		var initialSizes = getFileCount(gd);
-		gd.addMessage("Matched files: " + initialSizes.first());
+		gd.addMessage(I18n.t("seq.matched", initialSizes.first()));
 		var filterCountDisplay = (Label) gd.getComponent(gd.getComponentCount() - 1);
-		gd.addMessage("Estimated stack size: " + initialSizes.second() + " MB");
+		gd.addMessage(I18n.t("seq.stack_size", initialSizes.second()));
 		var filterSizeDisplay = (Label) gd.getComponent(gd.getComponentCount() - 1);
 
 		for (Object stringField : gd.getStringFields()) {
 			((TextField) stringField).addTextListener(_ -> {
-				filterCountDisplay.setText("Matched files: " + 0);
-				filterSizeDisplay.setText("Estimated stack size: " + 0 + " MB");
+				filterCountDisplay.setText(I18n.t("seq.matched", 0));
+				filterSizeDisplay.setText(I18n.t("seq.stack_size", 0));
 				var x = getFileCount(gd);
-				filterCountDisplay.setText("Matched files: " + x.first());
-				filterSizeDisplay.setText("Estimated stack size: " + IJ.d2s(x.second(), 1) + " MB");
+				filterCountDisplay.setText(I18n.t("seq.matched", x.first()));
+				filterSizeDisplay.setText(I18n.t("seq.stack_size", IJ.d2s(x.second(), 1)));
 			});
 		}
 		// End display stack size

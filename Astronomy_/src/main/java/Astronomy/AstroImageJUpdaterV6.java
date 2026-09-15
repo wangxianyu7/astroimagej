@@ -122,7 +122,7 @@ public class AstroImageJUpdaterV6 implements PlugIn {
     }
 
     public void updateCheck() {
-        if (Prefs.getBoolean(DO_UPDATE_NOTIFICATION, true)) {
+        if (Prefs.getBoolean(DO_UPDATE_NOTIFICATION, false)) {   // zh_CN fork: startup update check OFF by default (avoid overwriting localized build)
             if (hasUpdateAvailable()) {
                 dialog();
             }
@@ -604,7 +604,7 @@ public class AstroImageJUpdaterV6 implements PlugIn {
         var enableAlphaBuilds = new JCheckBox("Show Alpha Builds", ENABLE_ALPHAS.get());
         b.add(enableAlphaBuilds);
 
-        var updateCheckOnStartup = new JCheckBox("Perform Update Check on startup", Prefs.getBoolean(DO_UPDATE_NOTIFICATION, true));
+        var updateCheckOnStartup = new JCheckBox("Perform Update Check on startup", Prefs.getBoolean(DO_UPDATE_NOTIFICATION, false));
         b.add(updateCheckOnStartup);
 
         var selector = new JComboBox<>(new Vector<>(filteredVersions));

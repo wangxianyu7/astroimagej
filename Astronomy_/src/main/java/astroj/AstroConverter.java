@@ -114,6 +114,7 @@ import javax.swing.event.PopupMenuEvent;
 import javax.swing.event.PopupMenuListener;
 
 import astroj.util.SkyMapOptions;
+import ij.I18n;
 import ij.Prefs;
 import ij.astro.gui.GenericSwingDialog;
 import ij.astro.io.prefs.Property;
@@ -319,7 +320,7 @@ public class AstroConverter extends LeapSeconds implements ItemListener, ActionL
     String raB1950Text = "enter ra", decB1950Text = "enter dec", galLonB1950Text = "enter lon", galLatB1950Text = "enter lat ";
     String raEOIText = "enter ra", decEOIText = "enter dec", eclLonEOIText = "enter lon", eclLatEOIText = "enter lat";
     String haEOIText = "hour angle", zdEOIText = "zenith distance", dirText = "---", altEOIText = "altitude", azEOIText = "azimuth", airmassText = "airmass";
-    String frameTitle = "Coordinate Converter";
+    String frameTitle = I18n.t("cc.title");
     String objectText;
     Border grayBorder = new CompoundBorder(BorderFactory.createLineBorder(Color.GRAY), new EmptyBorder(2, 2, 3, 2));    //top,left,bottom,right
     Border greenBorder = new CompoundBorder(BorderFactory.createLineBorder(new Color(0, 200, 0)), new EmptyBorder(2, 2, 3, 2));
@@ -628,7 +629,7 @@ public class AstroConverter extends LeapSeconds implements ItemListener, ActionL
         }
 
         JPanel currentTimePanel = new JPanel(new SpringLayout());
-        currentTimePanel.setBorder(BorderFactory.createTitledBorder(BorderFactory.createLineBorder(mainBorderColor, 1), "Current UTC-based Time", TitledBorder.LEFT, TitledBorder.TOP, b12, Color.DARK_GRAY));
+        currentTimePanel.setBorder(BorderFactory.createTitledBorder(BorderFactory.createLineBorder(mainBorderColor, 1), I18n.t("cc.current_time"), TitledBorder.LEFT, TitledBorder.TOP, b12, Color.DARK_GRAY));
 
         JLabel currentUTDateLabel = new JLabel(" UTC:");
         currentUTDateLabel.setFont(p12);
@@ -742,7 +743,7 @@ public class AstroConverter extends LeapSeconds implements ItemListener, ActionL
         JPanel objectObservatoryIDPanel = new JPanel(new SpringLayout());
 
         JPanel objectIDPanel = new JPanel(new SpringLayout());
-        objectIDPanel.setBorder(BorderFactory.createTitledBorder(BorderFactory.createLineBorder(mainBorderColor, 1), "SIMBAD Object ID (or SS Object)", TitledBorder.LEFT, TitledBorder.TOP, b12, Color.DARK_GRAY));
+        objectIDPanel.setBorder(BorderFactory.createTitledBorder(BorderFactory.createLineBorder(mainBorderColor, 1), I18n.t("cc.simbad_id"), TitledBorder.LEFT, TitledBorder.TOP, b12, Color.DARK_GRAY));
 
         objectIDTextField = new JTextField(objectIDText);
         objectIDTextField.setMargin(coordMargin);
@@ -756,7 +757,7 @@ public class AstroConverter extends LeapSeconds implements ItemListener, ActionL
         objectObservatoryIDPanel.add(objectIDPanel);
 
         JPanel timeZonePanel = new JPanel(new SpringLayout());
-        timeZonePanel.setBorder(BorderFactory.createTitledBorder(BorderFactory.createLineBorder(mainBorderColor, 1), "Time Zone", TitledBorder.LEFT, TitledBorder.TOP, b12, Color.DARK_GRAY));
+        timeZonePanel.setBorder(BorderFactory.createTitledBorder(BorderFactory.createLineBorder(mainBorderColor, 1), I18n.t("cc.time_zone"), TitledBorder.LEFT, TitledBorder.TOP, b12, Color.DARK_GRAY));
         JLabel timeZoneLabel = new JLabel("UTC offset:");
         timeZoneLabel.setHorizontalAlignment(JLabel.RIGHT);
         timeZoneLabel.setFont(p12);
@@ -794,7 +795,7 @@ public class AstroConverter extends LeapSeconds implements ItemListener, ActionL
 
 
         JPanel observatoryIDPanel = new JPanel(new SpringLayout());
-        observatoryIDPanel.setBorder(BorderFactory.createTitledBorder(BorderFactory.createLineBorder(mainBorderColor, 1), "Observatory ID", TitledBorder.LEFT, TitledBorder.TOP, b12, Color.DARK_GRAY));
+        observatoryIDPanel.setBorder(BorderFactory.createTitledBorder(BorderFactory.createLineBorder(mainBorderColor, 1), I18n.t("cc.observatory"), TitledBorder.LEFT, TitledBorder.TOP, b12, Color.DARK_GRAY));
 
         observatoryIDComboBox = new JComboBox<>(observatoryIDs);
         observatoryIDComboBox.setPreferredSize(new Dimension((int) (coordSize.width * 3.0), coordSize.height + 2));
@@ -822,7 +823,7 @@ public class AstroConverter extends LeapSeconds implements ItemListener, ActionL
         JPanel pmlocalPanel = new JPanel(new SpringLayout());
 
         JPanel pmPanel = new JPanel(new SpringLayout());
-        pmPanel.setBorder(BorderFactory.createTitledBorder(BorderFactory.createLineBorder(mainBorderColor, 1), "Target Proper Motion (mas/yr)", TitledBorder.LEFT, TitledBorder.TOP, b12, Color.DARK_GRAY));
+        pmPanel.setBorder(BorderFactory.createTitledBorder(BorderFactory.createLineBorder(mainBorderColor, 1), I18n.t("cc.proper_motion"), TitledBorder.LEFT, TitledBorder.TOP, b12, Color.DARK_GRAY));
 
         JLabel pmRALabel = new JLabel(" pmRA:");
         pmRALabel.setFont(p12);
@@ -857,7 +858,7 @@ public class AstroConverter extends LeapSeconds implements ItemListener, ActionL
 
 
         JPanel localPanel = new JPanel(new SpringLayout());
-        localPanel.setBorder(BorderFactory.createTitledBorder(BorderFactory.createLineBorder(mainBorderColor, 1), "Geographic Location of Observatory", TitledBorder.LEFT, TitledBorder.TOP, b12, Color.DARK_GRAY));
+        localPanel.setBorder(BorderFactory.createTitledBorder(BorderFactory.createLineBorder(mainBorderColor, 1), I18n.t("cc.location"), TitledBorder.LEFT, TitledBorder.TOP, b12, Color.DARK_GRAY));
 
 
         JLabel longitudeLabel = new JLabel(" Lon:");
@@ -916,7 +917,7 @@ public class AstroConverter extends LeapSeconds implements ItemListener, ActionL
 
 
         JPanel J2000CoordPanel = new JPanel(new SpringLayout());
-        J2000CoordPanel.setBorder(BorderFactory.createTitledBorder(BorderFactory.createLineBorder(mainBorderColor, 1), "Standard Coordinates", TitledBorder.LEFT, TitledBorder.TOP, b12, Color.DARK_GRAY));
+        J2000CoordPanel.setBorder(BorderFactory.createTitledBorder(BorderFactory.createLineBorder(mainBorderColor, 1), I18n.t("cc.standard_coords"), TitledBorder.LEFT, TitledBorder.TOP, b12, Color.DARK_GRAY));
 
         Insets linkButtonMargin = new Insets(2, 2, 2, 2);
         if (isLinux) linkButtonMargin = new Insets(0, 0, 0, 0);
@@ -943,7 +944,7 @@ public class AstroConverter extends LeapSeconds implements ItemListener, ActionL
 
 
         JPanel J2000EquPanel = new JPanel(new SpringLayout());
-        J2000EquPanel.setBorder(BorderFactory.createTitledBorder(BorderFactory.createLineBorder(Color.LIGHT_GRAY, 1), "J2000 Equatorial", TitledBorder.CENTER, TitledBorder.TOP, p12, Color.DARK_GRAY));
+        J2000EquPanel.setBorder(BorderFactory.createTitledBorder(BorderFactory.createLineBorder(Color.LIGHT_GRAY, 1), I18n.t("cc.j2000_equ"), TitledBorder.CENTER, TitledBorder.TOP, p12, Color.DARK_GRAY));
 
         JLabel J2000RaLabel = new JLabel("   RA:");
         J2000RaLabel.setFont(p12);
@@ -984,7 +985,7 @@ public class AstroConverter extends LeapSeconds implements ItemListener, ActionL
 
 
         JPanel J2000EclPanel = new JPanel(new SpringLayout());
-        J2000EclPanel.setBorder(BorderFactory.createTitledBorder(BorderFactory.createLineBorder(Color.LIGHT_GRAY, 1), "J2000 Ecliptic", TitledBorder.CENTER, TitledBorder.TOP, p12, Color.DARK_GRAY));
+        J2000EclPanel.setBorder(BorderFactory.createTitledBorder(BorderFactory.createLineBorder(Color.LIGHT_GRAY, 1), I18n.t("cc.j2000_ecl"), TitledBorder.CENTER, TitledBorder.TOP, p12, Color.DARK_GRAY));
 
         JLabel J2000eclLonLabel = new JLabel("  Lon:");
         J2000eclLonLabel.setFont(p12);
@@ -1045,7 +1046,7 @@ public class AstroConverter extends LeapSeconds implements ItemListener, ActionL
         J2000CoordPanel.add(skyMapPanel);
 
         JPanel B1950EquPanel = new JPanel(new SpringLayout());
-        B1950EquPanel.setBorder(BorderFactory.createTitledBorder(BorderFactory.createLineBorder(Color.LIGHT_GRAY, 1), "B1950 Equatorial", TitledBorder.CENTER, TitledBorder.TOP, p12, Color.DARK_GRAY));
+        B1950EquPanel.setBorder(BorderFactory.createTitledBorder(BorderFactory.createLineBorder(Color.LIGHT_GRAY, 1), I18n.t("cc.b1950_equ"), TitledBorder.CENTER, TitledBorder.TOP, p12, Color.DARK_GRAY));
 
         JLabel B1950raLabel = new JLabel("   RA:");
         B1950raLabel.setFont(p12);
@@ -1086,7 +1087,7 @@ public class AstroConverter extends LeapSeconds implements ItemListener, ActionL
 
 
         JPanel B1950GalPanel = new JPanel(new SpringLayout());
-        B1950GalPanel.setBorder(BorderFactory.createTitledBorder(BorderFactory.createLineBorder(Color.LIGHT_GRAY, 1), "Galactic", TitledBorder.CENTER, TitledBorder.TOP, p12, Color.DARK_GRAY));
+        B1950GalPanel.setBorder(BorderFactory.createTitledBorder(BorderFactory.createLineBorder(Color.LIGHT_GRAY, 1), I18n.t("cc.galactic"), TitledBorder.CENTER, TitledBorder.TOP, p12, Color.DARK_GRAY));
 
         JLabel B1950GalLonLabel = new JLabel("  Lon:");
         B1950GalLonLabel.setFont(p12);
@@ -1130,10 +1131,10 @@ public class AstroConverter extends LeapSeconds implements ItemListener, ActionL
 
 
         JPanel eoiPanel = new JPanel(new SpringLayout());
-        eoiPanel.setBorder(BorderFactory.createTitledBorder(BorderFactory.createLineBorder(mainBorderColor, 1), "Epoch of Interest", TitledBorder.LEFT, TitledBorder.TOP, b12, Color.DARK_GRAY));
+        eoiPanel.setBorder(BorderFactory.createTitledBorder(BorderFactory.createLineBorder(mainBorderColor, 1), I18n.t("cc.epoch_interest"), TitledBorder.LEFT, TitledBorder.TOP, b12, Color.DARK_GRAY));
 
         JPanel eoiDateTimePanel = new JPanel(new SpringLayout());
-        eoiDateTimePanel.setBorder(BorderFactory.createTitledBorder(BorderFactory.createLineBorder(Color.LIGHT_GRAY, 1), "UTC-based Time", TitledBorder.LEFT, TitledBorder.TOP, p12, Color.DARK_GRAY));
+        eoiDateTimePanel.setBorder(BorderFactory.createTitledBorder(BorderFactory.createLineBorder(Color.LIGHT_GRAY, 1), I18n.t("cc.utc_time"), TitledBorder.LEFT, TitledBorder.TOP, p12, Color.DARK_GRAY));
 
         //JDEOI STEPSIZE POPUP
         JPanel utEOIsteppanel = new JPanel();
@@ -1196,7 +1197,7 @@ public class AstroConverter extends LeapSeconds implements ItemListener, ActionL
         JPanel nowPanel = new JPanel(new SpringLayout());
         nowPanel.setBorder(BorderFactory.createLineBorder(Color.LIGHT_GRAY, 1));
 
-        nowEOIButton = new JButton("Now");
+        nowEOIButton = new JButton(I18n.t("cc.btn_now"));
         nowEOIButton.setToolTipText("Set the epoch of interest to the current UTC date and time");
         nowEOIButton.setFont(p12);
         nowEOIButton.setEnabled(!useNowEpoch && timeEnabled);
@@ -1577,7 +1578,7 @@ public class AstroConverter extends LeapSeconds implements ItemListener, ActionL
         eoiPanel.add(eoiDateTimePanel);
 
         JPanel eoiDeltaTPanel = new JPanel(new SpringLayout());
-        eoiDeltaTPanel.setBorder(BorderFactory.createTitledBorder(BorderFactory.createLineBorder(Color.LIGHT_GRAY, 1), "Dynamical Time", TitledBorder.LEFT, TitledBorder.TOP, p12, Color.DARK_GRAY));
+        eoiDeltaTPanel.setBorder(BorderFactory.createTitledBorder(BorderFactory.createLineBorder(Color.LIGHT_GRAY, 1), I18n.t("cc.dynamical"), TitledBorder.LEFT, TitledBorder.TOP, p12, Color.DARK_GRAY));
 
         JPanel eoiLeapSecPanel = new JPanel(new SpringLayout());
         eoiLeapSecPanel.setBorder(BorderFactory.createLineBorder(Color.LIGHT_GRAY, 1));
@@ -1712,7 +1713,7 @@ public class AstroConverter extends LeapSeconds implements ItemListener, ActionL
 
 
         JPanel ObsEquPanel = new JPanel(new SpringLayout());
-        ObsEquPanel.setBorder(BorderFactory.createTitledBorder(BorderFactory.createLineBorder(Color.LIGHT_GRAY, 1), "Equatorial", TitledBorder.CENTER, TitledBorder.TOP, p12, Color.DARK_GRAY));
+        ObsEquPanel.setBorder(BorderFactory.createTitledBorder(BorderFactory.createLineBorder(Color.LIGHT_GRAY, 1), I18n.t("cc.equatorial"), TitledBorder.CENTER, TitledBorder.TOP, p12, Color.DARK_GRAY));
 
         JLabel obsRaLabel = new JLabel("   RA:");
         obsRaLabel.setFont(p12);
@@ -1752,7 +1753,7 @@ public class AstroConverter extends LeapSeconds implements ItemListener, ActionL
         eoiCoordPanel.add(ObsEquPanel);
 
         JPanel elatlonEOIPanel = new JPanel(new SpringLayout());
-        elatlonEOIPanel.setBorder(BorderFactory.createTitledBorder(BorderFactory.createLineBorder(Color.LIGHT_GRAY, 1), "Ecliptic", TitledBorder.CENTER, TitledBorder.TOP, p12, Color.DARK_GRAY));
+        elatlonEOIPanel.setBorder(BorderFactory.createTitledBorder(BorderFactory.createLineBorder(Color.LIGHT_GRAY, 1), I18n.t("cc.ecliptic"), TitledBorder.CENTER, TitledBorder.TOP, p12, Color.DARK_GRAY));
 
         JLabel elonEOILabel = new JLabel("   Lon:");
         elonEOILabel.setFont(p12);
@@ -1793,7 +1794,7 @@ public class AstroConverter extends LeapSeconds implements ItemListener, ActionL
 
 
         JPanel ObsHorPanel = new JPanel(new SpringLayout());
-        ObsHorPanel.setBorder(BorderFactory.createTitledBorder(BorderFactory.createLineBorder(Color.LIGHT_GRAY, 1), "Horizontal", TitledBorder.CENTER, TitledBorder.TOP, p12, Color.DARK_GRAY));
+        ObsHorPanel.setBorder(BorderFactory.createTitledBorder(BorderFactory.createLineBorder(Color.LIGHT_GRAY, 1), I18n.t("cc.horizontal"), TitledBorder.CENTER, TitledBorder.TOP, p12, Color.DARK_GRAY));
 
         JLabel obsAltLabel = new JLabel("   Alt:");
         obsAltLabel.setFont(p12);
@@ -1834,7 +1835,7 @@ public class AstroConverter extends LeapSeconds implements ItemListener, ActionL
 
 
         JPanel hazdEOIPanel = new JPanel(new SpringLayout());
-        hazdEOIPanel.setBorder(BorderFactory.createTitledBorder(BorderFactory.createLineBorder(Color.LIGHT_GRAY, 1), "Direction - Hour Angle - Zenith Distance - Airmass", TitledBorder.CENTER, TitledBorder.TOP, p12, Color.DARK_GRAY));
+        hazdEOIPanel.setBorder(BorderFactory.createTitledBorder(BorderFactory.createLineBorder(Color.LIGHT_GRAY, 1), I18n.t("cc.az_ha_zd_am"), TitledBorder.CENTER, TitledBorder.TOP, p12, Color.DARK_GRAY));
 
         JLabel dirEOILabel = new JLabel("Dir:");
         dirEOILabel.setFont(p12);
@@ -1907,7 +1908,7 @@ public class AstroConverter extends LeapSeconds implements ItemListener, ActionL
 
 
         JPanel ssbPanel = new JPanel(new SpringLayout());
-        ssbPanel.setBorder(BorderFactory.createTitledBorder(BorderFactory.createLineBorder(Color.LIGHT_GRAY, 1), "Phase - Altitude - Proximity", TitledBorder.LEFT, TitledBorder.TOP, p12, Color.DARK_GRAY));
+        ssbPanel.setBorder(BorderFactory.createTitledBorder(BorderFactory.createLineBorder(Color.LIGHT_GRAY, 1), I18n.t("cc.ssb_section"), TitledBorder.LEFT, TitledBorder.TOP, p12, Color.DARK_GRAY));
 
         moonPhaseLabel = new JLabel(moonIcon[0]);
         moonPhaseLabel.setToolTipText("Moon phase at epoch of interest");

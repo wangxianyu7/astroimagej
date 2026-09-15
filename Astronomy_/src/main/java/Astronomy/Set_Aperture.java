@@ -1,6 +1,7 @@
 package Astronomy;// Set_Aperture.java
 
 import astroj.Photometer;
+import ij.I18n;
 import ij.IJ;
 import ij.Prefs;
 import ij.gui.GenericDialog;
@@ -206,31 +207,31 @@ public class Set_Aperture implements PlugIn
 
 	public boolean mainPanel ()
 		{
-		GenericDialog gd = new GenericDialog ("Aperture Photometry Settings");
+		GenericDialog gd = new GenericDialog (I18n.t("apset.title"));
 
-        gd.addFloatSlider("Radius of object aperture", 1, radius>100?radius:100, radius, 3, 1);
-        gd.addFloatSlider("Inner radius of background annulus", 1, rBack1>100?rBack1:100, rBack1, 3, 1);
-        gd.addFloatSlider("Outer radius of background annulus", 1, rBack2>100?rBack2:100, rBack2, 3, 1);
-        gd.addCheckbox ("Use variable aperture (Multi-Aperture only)", useVarSizeAp);
-        gd.addFloatSlider("          FWHM factor (set to 0.00 for radial profile mode)", 0.0, 5.1, apFWHMFactor, 3, 0.1);
-        gd.addNumericField("Radial profile mode normalized flux cutoff",  autoModeFluxCutOff, 3, 6, "(0 < cuffoff < 1 ; default = 0.010)");
-        gd.addCheckboxGroup(1, 5, new String[]{"Centroid apertures","Use Howell centroid method","Fit background to plane","Remove stars from backgnd","Mark removed pixels"},
+        gd.addFloatSlider(I18n.t("apset.radius_obj"), 1, radius>100?radius:100, radius, 3, 1);
+        gd.addFloatSlider(I18n.t("apset.radius_inner_bg"), 1, rBack1>100?rBack1:100, rBack1, 3, 1);
+        gd.addFloatSlider(I18n.t("apset.radius_outer_bg"), 1, rBack2>100?rBack2:100, rBack2, 3, 1);
+        gd.addCheckbox (I18n.t("apset.use_variable"), useVarSizeAp);
+        gd.addFloatSlider(I18n.t("apset.fwhm_factor"), 0.0, 5.1, apFWHMFactor, 3, 0.1);
+        gd.addNumericField(I18n.t("apset.radial_cutoff"),  autoModeFluxCutOff, 3, 6, I18n.t("apset.cutoff_hint"));
+        gd.addCheckboxGroup(1, 5, new String[]{I18n.t("apset.cb_centroid"),I18n.t("apset.cb_howell"),I18n.t("apset.cb_bg_plane"),I18n.t("apset.cb_remove_stars"),I18n.t("apset.cb_mark_removed")},
                                   new boolean[]{reposition,useHowellCentroidMethod,backPlane,removeBackStars,showRemovedPixels});
-        gd.addCheckbox ("Use exact partial pixel accounting in source apertures (if deselected, only pixels having centers inside the aperture radius are counted)", exact);
-        gd.addCheckbox("Use multiple threads for photometry", Photometer.USE_PARALLEL_PIXEL_PROCESS.get());
-        gd.addCheckbox ("Prompt to enter ref star absolute mag (required if target star absolute mag is desired)", getMags);
-        gd.addCheckbox ("List the following FITS keyword decimal values in measurements table:", showFits);
-		gd.addStringField ("Keywords (comma separated):",fitsKeywords,80);
-		gd.addNumericField ("CCD gain", gain, 6, 10, "[e-/count]");
-		gd.addNumericField ("CCD readout noise", noise, 6, 10, "[e-]");
-		gd.addNumericField ("CCD dark current per sec", dark, 6, 10, "[e-/pix/sec]");
-		gd.addStringField ("or - FITS keyword for dark current per exposure [e-/pix]", darkKeyword);    
-		gd.addCheckbox ("Saturation warning ('Saturated' in table) (red border in Ref Star Panel)...", showSaturationWarning);
-		gd.addNumericField ("    .... for levels higher than", saturationWarningLevel,0);
-		gd.addCheckbox ("Linearity warning (yellow border in Ref Star Panel)...", showLinearityWarning);
-		gd.addNumericField ("    .... for levels higher than", linearityWarningLevel,0);        
+        gd.addCheckbox (I18n.t("apset.exact_partial"), exact);
+        gd.addCheckbox(I18n.t("apset.parallel"), Photometer.USE_PARALLEL_PIXEL_PROCESS.get());
+        gd.addCheckbox (I18n.t("apset.prompt_refstar"), getMags);
+        gd.addCheckbox (I18n.t("apset.list_fits_kw"), showFits);
+		gd.addStringField (I18n.t("apset.keywords"),fitsKeywords,80);
+		gd.addNumericField (I18n.t("apset.ccd_gain"), gain, 6, 10, I18n.t("apset.unit_e_count"));
+		gd.addNumericField (I18n.t("apset.ccd_ron"), noise, 6, 10, I18n.t("apset.unit_e"));
+		gd.addNumericField (I18n.t("apset.ccd_dark"), dark, 6, 10, I18n.t("apset.unit_e_pix_sec"));
+		gd.addStringField (I18n.t("apset.dark_kw"), darkKeyword);
+		gd.addCheckbox (I18n.t("apset.sat_warning"), showSaturationWarning);
+		gd.addNumericField (I18n.t("apset.warning_above"), saturationWarningLevel,0);
+		gd.addCheckbox (I18n.t("apset.lin_warning"), showLinearityWarning);
+		gd.addNumericField (I18n.t("apset.warning_above"), linearityWarningLevel,0);
 
-        gd.enableYesNoCancel("OK", "More Settings");
+        gd.enableYesNoCancel(I18n.t("apset.btn_ok"), I18n.t("apset.btn_more"));
 
 		gd.showDialog();
 		if (gd.wasCanceled())
@@ -298,37 +299,37 @@ public class Set_Aperture implements PlugIn
     
 	public boolean otherPanel ()
 		{
-		GenericDialog gd = new GenericDialog ("More Aperture Photometry Settings");
-        
-		gd.addMessage ("Select single aperture items to display in measurements table:");
-        gd.addCheckboxGroup(5, 4, new String[]{"Filename (Label)", "Slice Number (slice)", "Time Stamps (JD_UTC, etc)","World Coordinates (RA, DEC)",
-                                               "FITS Coords (X(FITS), Y(FITS))", "IJ Coords (X(IJ), Y(IJ))", "Aperture Radii", "Aperture variance (Variance)",
-                                               "Source Counts (Source-Sky)","Source Peak (Peak)*","Source Mean (Mean)","Sky Background (Sky/Pixel)",
-                                               "Source FWHM (Width)", "Moment Widths (X-Width, Y-Width)", "Orientation Angle (Angle)","Roundness (Roundness)",
-                                               "Source Error (Source_Error)**", "Source SNR (Source_SNR)**", "N Source Pixels (N_Src_Pixels)", "N Sky Pixels (N_Sky_Pixels)"},
+		GenericDialog gd = new GenericDialog (I18n.t("apset.more_title"));
+
+		gd.addMessage (I18n.t("apset.select_single"));
+        gd.addCheckboxGroup(5, 4, new String[]{I18n.t("apset.col_filename"), I18n.t("apset.col_slice"), I18n.t("apset.col_times"), I18n.t("apset.col_radec"),
+                                               I18n.t("apset.col_fits_xy"), I18n.t("apset.col_ij_xy"), I18n.t("apset.col_radii"), I18n.t("apset.col_variance"),
+                                               I18n.t("apset.col_source"), I18n.t("apset.col_peak"), I18n.t("apset.col_mean"), I18n.t("apset.col_sky"),
+                                               I18n.t("apset.col_fwhm"), I18n.t("apset.col_widths"), I18n.t("apset.col_angle"), I18n.t("apset.col_round"),
+                                               I18n.t("apset.col_src_err"), I18n.t("apset.col_src_snr"), I18n.t("apset.col_n_src"), I18n.t("apset.col_n_sky")},
                                   new boolean[]{showFileName, showSliceNumber, showTimes, showRADEC,
                                                 showPositionFITS, showPosition, showRadii, showVariance,
                                                 showPhotometry,showPeak,showMean,showBack,
                                                 showMeanWidth,showWidths,showAngle,showRoundness,
-                                                showErrors, showSNR, showNAperPixels, showNBackPixels});        
+                                                showErrors, showSNR, showNAperPixels, showNBackPixels});
 
-        gd.addMessage ("Select Multi-Aperture items to display in measurements table:");
-        gd.addCheckboxGroup(1, 4, new String[]{"Relative Flux (rel_flux)", "Rel. Flux Error(rel_flux_err)**", "Rel. Flux SNR(rel_flux_SNR)**","Total Comp Star Cnts (tot_C_cnts)"},
-                                  new boolean[]{showRatio, showRatioError, showRatioSNR, showCompTot}); 
-		gd.addMessage ("(*to disable, Saturation and Linearity Warnings must be disabled in 'Main Settings' panel)\n(**requires gain, readout noise, and dark current info in 'Main Settings' panel)");
-        
-        gd.addMessage ("Multi-Aperture settings:");
-        gd.addCheckbox ("Allow left/right double click for fast zoom-in/out (adds slight delay to aperture placement)", enableDoubleClicks);
-        gd.addCheckbox ("Always default Multi-Aperture and Stack Aligner first slice to slice 1", alwaysstartatfirstSlice);
-        gd.addNumericField ("Maximum number of apertures per image :", nAperturesMax,0,6,"");
-	
-		gd.addMessage ("Select aperture items to display (or clear) in image overlay:");
-        gd.addCheckboxGroup(1, 4, new String[]{"Object Aperture", "Sky Annulus", "Source Number", "Value(s)"},
-                                  new boolean[]{starOverlay, skyOverlay, nameOverlay, valueOverlay});  
-        gd.addCheckboxGroup(1, 2, new String[]{"Clear overlay after use", "Clear overlay before use"}, 
-                                  new boolean[]{tempOverlay, clearOverlay});        
+        gd.addMessage (I18n.t("apset.select_multi"));
+        gd.addCheckboxGroup(1, 4, new String[]{I18n.t("apset.col_rel_flux"), I18n.t("apset.col_rel_err"), I18n.t("apset.col_rel_snr"), I18n.t("apset.col_tot_c")},
+                                  new boolean[]{showRatio, showRatioError, showRatioSNR, showCompTot});
+		gd.addMessage (I18n.t("apset.note_warnings"));
 
-        gd.enableYesNoCancel("OK", "Main Settings");
+        gd.addMessage (I18n.t("apset.ma_settings"));
+        gd.addCheckbox (I18n.t("apset.allow_dblclick"), enableDoubleClicks);
+        gd.addCheckbox (I18n.t("apset.always_first_slice"), alwaysstartatfirstSlice);
+        gd.addNumericField (I18n.t("apset.max_apertures"), nAperturesMax,0,6,"");
+
+		gd.addMessage (I18n.t("apset.select_overlay"));
+        gd.addCheckboxGroup(1, 4, new String[]{I18n.t("apset.ovl_obj"), I18n.t("apset.ovl_sky"), I18n.t("apset.ovl_num"), I18n.t("apset.ovl_val")},
+                                  new boolean[]{starOverlay, skyOverlay, nameOverlay, valueOverlay});
+        gd.addCheckboxGroup(1, 2, new String[]{I18n.t("apset.ovl_clear_after"), I18n.t("apset.ovl_clear_before")},
+                                  new boolean[]{tempOverlay, clearOverlay});
+
+        gd.enableYesNoCancel(I18n.t("apset.btn_ok"), I18n.t("apset.btn_main"));
 
 		gd.showDialog();
         
