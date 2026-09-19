@@ -16,8 +16,8 @@ import java.awt.*;
 import java.awt.font.GlyphVector;
 import java.awt.geom.Rectangle2D;
 import java.awt.image.*;
-import java.util.ArrayList;
 import java.util.Collection;
+import java.util.HashSet;
 import java.util.Random;
 
 /**
@@ -122,7 +122,7 @@ public abstract class ImageProcessor implements Cloneable {
 	protected static double seed = Double.NaN;
 	protected static Random rnd;
 	@AstroImageJ(reason = "Display bad pixels")
-	protected Collection<PixelPatcher.Pixel> badPixels;
+	protected Collection<PixelPatcher.BpmPixel> badPixels;
 
 	protected void showProgress(double percentDone) {
 		if (progressBar!=null)
@@ -998,20 +998,42 @@ public abstract class ImageProcessor implements Cloneable {
 	public void markBadPixel(int x, int y) {
 		// If BPM is present, treat the IP as having been modified
 		if (badPixels == null) {
-			badPixels = new ArrayList<>();
+			badPixels = new HashSet<>();
 		}
 		if (PixelPatcher.PRESERVE_BPM.get()) {
-			badPixels.add(new PixelPatcher.Pixel(x, y));
+			badPixels.add(new PixelPatcher.BpmPixel.Pixel(x, y));
 		}
 	}
 
 	@AstroImageJ(reason = "Mark bad pixels")
-	public void setBadPixels(Collection<PixelPatcher.Pixel> pixels) {
+	public void markBadPixelSource(int x, int y) {
+		// If BPM is present, treat the IP as having been modified
+		if (badPixels == null) {
+			badPixels = new HashSet<>();
+		}
+		if (PixelPatcher.PRESERVE_BPM_SOURCE_PIXELS.get()) {
+			badPixels.add(new PixelPatcher.BpmPixel.SourcePixel(x, y));
+		}
+	}
+
+	@AstroImageJ(reason = "Mark bad pixels")
+	public void markUncorrectedBadPixel(int x, int y) {
+		// If BPM is present, treat the IP as having been modified
+		if (badPixels == null) {
+			badPixels = new HashSet<>();
+		}
+		if (PixelPatcher.PRESERVE_BPM.get()) {
+			badPixels.add(new PixelPatcher.BpmPixel.UncorrectedPixel(x, y));
+		}
+	}
+
+	@AstroImageJ(reason = "Mark bad pixels")
+	public void setBadPixels(Collection<PixelPatcher.BpmPixel> pixels) {
 		badPixels = pixels;
 	}
 
 	@AstroImageJ(reason = "Mark bad pixels")
-	public Collection<PixelPatcher.Pixel> getBadPixels() {
+	public Collection<PixelPatcher.BpmPixel> getBadPixels() {
 		return badPixels;
 	}
 
