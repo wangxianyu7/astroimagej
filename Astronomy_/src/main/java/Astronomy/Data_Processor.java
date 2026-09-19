@@ -85,6 +85,7 @@ import astroj.FitsJ;
 import astroj.IJU;
 import astroj.MeasurementTable;
 import astroj.SpringUtil;
+import ij.I18n;
 import ij.IJ;
 import ij.ImagePlus;
 import ij.ImageStack;
@@ -1165,19 +1166,19 @@ public class Data_Processor implements PlugIn, ActionListener, ChangeListener, /
         JPanel labelPanel = new JPanel(new SpringLayout());
         labelPanel.setBorder(BorderFactory.createEmptyBorder(0, 6, 0, 8));
 
-        JLabel labelrowdummyLabel = new JLabel("Control");
+        JLabel labelrowdummyLabel = new JLabel(I18n.t("dp.col_control"));
         labelrowdummyLabel.setFont(b12);
         labelrowdummyLabel.setPreferredSize(checkBoxSize);
         labelrowdummyLabel.setHorizontalAlignment(JLabel.LEFT);
         labelPanel.add(labelrowdummyLabel);
 
-        JLabel labelrow2dummyLabel = new JLabel("Options");
+        JLabel labelrow2dummyLabel = new JLabel(I18n.t("dp.col_options"));
         labelrow2dummyLabel.setFont(b12);
         labelrow2dummyLabel.setPreferredSize(radioSize);
         labelrow2dummyLabel.setHorizontalAlignment(JLabel.CENTER);
         labelPanel.add(labelrow2dummyLabel);
 
-        JTextField dirLabel = new JTextField("Directory");
+        JTextField dirLabel = new JTextField(I18n.t("dp.col_directory"));
         dirLabel.setFont(b12);
         dirLabel.setEditable(false);
         dirLabel.setBackground(gray);
@@ -1192,7 +1193,7 @@ public class Data_Processor implements PlugIn, ActionListener, ChangeListener, /
         labelDummyLabel1.setHorizontalAlignment(JLabel.CENTER);
         labelPanel.add(labelDummyLabel1);
 
-        JTextField filenameLabel = new JTextField("Filename/Pattern");
+        JTextField filenameLabel = new JTextField(I18n.t("dp.col_fnpattern"));
         filenameLabel.setFont(b12);
         filenameLabel.setEditable(false);
         filenameLabel.setBackground(gray);
@@ -1207,7 +1208,7 @@ public class Data_Processor implements PlugIn, ActionListener, ChangeListener, /
         labelDummyLabel2.setHorizontalAlignment(JLabel.CENTER);
         labelPanel.add(labelDummyLabel2);
 
-        JLabel foundLabel = new JLabel("Totals");
+        JLabel foundLabel = new JLabel(I18n.t("dp.col_totals"));
         foundLabel.setFont(b12);
         foundLabel.setPreferredSize(new Dimension(validFilesWidth, topLabelHeight));
         foundLabel.setHorizontalAlignment(JLabel.RIGHT);
@@ -1219,19 +1220,19 @@ public class Data_Processor implements PlugIn, ActionListener, ChangeListener, /
 
 
         JPanel sciencePanel = new JPanel(new SpringLayout());
-        sciencePanel.setBorder(BorderFactory.createTitledBorder(BorderFactory.createLineBorder(mainBorderColor, 1), "Science Image Processing", TitledBorder.LEFT, TitledBorder.TOP, b12, Color.DARK_GRAY));
+        sciencePanel.setBorder(BorderFactory.createTitledBorder(BorderFactory.createLineBorder(mainBorderColor, 1), I18n.t("dp.sci_processing"), TitledBorder.LEFT, TitledBorder.TOP, b12, Color.DARK_GRAY));
 
         JPanel scienceImagePanel = new JPanel(new SpringLayout());
-        scienceImagePanel.setBorder(BorderFactory.createTitledBorder(BorderFactory.createLineBorder(Color.lightGray, 1), "Filename Pattern Matching", TitledBorder.LEFT, TitledBorder.TOP, p12, Color.DARK_GRAY));
+        scienceImagePanel.setBorder(BorderFactory.createTitledBorder(BorderFactory.createLineBorder(Color.lightGray, 1), I18n.t("dp.fn_pattern"), TitledBorder.LEFT, TitledBorder.TOP, p12, Color.DARK_GRAY));
 
-        useScienceProcessingBox = new JCheckBox("Enable", useScienceProcessing);
+        useScienceProcessingBox = new JCheckBox(I18n.t("dp.enable"), useScienceProcessing);
         useScienceProcessingBox.setFont(p12);
         useScienceProcessingBox.setPreferredSize(checkBoxSize);
         useScienceProcessingBox.setToolTipText("<html>Enable science file processing.</html>");
         useScienceProcessingBox.addItemListener(this);
         scienceImagePanel.add(useScienceProcessingBox);
 
-        sortNumericallyBox = new JCheckBox("Sort Num", sortNumerically);
+        sortNumericallyBox = new JCheckBox(I18n.t("dp.sort_num"), sortNumerically);
         sortNumericallyBox.setFont(p12);
         sortNumericallyBox.setPreferredSize(radioSize);
         sortNumericallyBox.setToolTipText("<html>Sort science files numerically before processing. The file processing order is determined<br>" +
@@ -1323,9 +1324,9 @@ public class Data_Processor implements PlugIn, ActionListener, ChangeListener, /
 
 
         JPanel scienceNumberPanel = new JPanel(new SpringLayout());
-        scienceNumberPanel.setBorder(BorderFactory.createTitledBorder(BorderFactory.createLineBorder(Color.LIGHT_GRAY, 1), "Filename Number Filtering", TitledBorder.LEFT, TitledBorder.TOP, p12, Color.DARK_GRAY));
+        scienceNumberPanel.setBorder(BorderFactory.createTitledBorder(BorderFactory.createLineBorder(Color.LIGHT_GRAY, 1), I18n.t("dp.fn_number_filter"), TitledBorder.LEFT, TitledBorder.TOP, p12, Color.DARK_GRAY));
 
-        enableFileNumberFilteringBox = new JCheckBox("Enable", enableFileNumberFiltering);
+        enableFileNumberFilteringBox = new JCheckBox(I18n.t("dp.enable"), enableFileNumberFiltering);
         enableFileNumberFilteringBox.setFont(p12);
         enableFileNumberFilteringBox.setPreferredSize(checkBoxSize);
         enableFileNumberFilteringBox.addItemListener(this);
@@ -1343,7 +1344,7 @@ public class Data_Processor implements PlugIn, ActionListener, ChangeListener, /
         JPanel minmaxValuePanel = new JPanel(new SpringLayout());
         minmaxValuePanel.setPreferredSize(directoryBoxSize);
 
-        minFileNumberLabel = new JLabel("Min:");
+        minFileNumberLabel = new JLabel(I18n.t("dp.min"));
         minFileNumberLabel.setFont(p12);
         minFileNumberLabel.setHorizontalAlignment(JLabel.RIGHT);
         minmaxValuePanel.add(minFileNumberLabel);
@@ -1359,7 +1360,7 @@ public class Data_Processor implements PlugIn, ActionListener, ChangeListener, /
         minFileNumberSpinner.addMouseWheelListener(this);
         minmaxValuePanel.add(minFileNumberSpinner);
 
-        maxFileNumberLabel = new JLabel("    Max:");
+        maxFileNumberLabel = new JLabel("    "+I18n.t("dp.max"));
         maxFileNumberLabel.setFont(p12);
         maxFileNumberLabel.setHorizontalAlignment(JLabel.RIGHT);
         minmaxValuePanel.add(maxFileNumberLabel);
@@ -1425,11 +1426,11 @@ public class Data_Processor implements PlugIn, ActionListener, ChangeListener, /
 
 
         JPanel biasPanel = new JPanel(new SpringLayout());
-        biasPanel.setBorder(BorderFactory.createTitledBorder(BorderFactory.createLineBorder(mainBorderColor, 1), "Bias Subtraction", TitledBorder.LEFT, TitledBorder.TOP, b12, Color.DARK_GRAY));
+        biasPanel.setBorder(BorderFactory.createTitledBorder(BorderFactory.createLineBorder(mainBorderColor, 1), I18n.t("dp.bias_sub"), TitledBorder.LEFT, TitledBorder.TOP, b12, Color.DARK_GRAY));
 
         JPanel rawBiasPanel = new JPanel(new SpringLayout());
 
-        createBiasBox = new JCheckBox("Build", createBias);
+        createBiasBox = new JCheckBox(I18n.t("dp.build"), createBias);
         createBiasBox.setFont(p12);
         createBiasBox.setPreferredSize(checkBoxSize);
         createBiasBox.setToolTipText("Build a new master bias file from the raw bias files specified to the right");
@@ -1441,12 +1442,12 @@ public class Data_Processor implements PlugIn, ActionListener, ChangeListener, /
 
         biasRadioGroup = new ButtonGroup();
 
-        biasAverageRadio = new JRadioButton("ave");
+        biasAverageRadio = new JRadioButton(I18n.t("dp.ave"));
         biasAverageRadio.setFont(p12);
         biasAverageRadio.setSelected(!biasMedian);
         biasAverageRadio.setToolTipText("average raw files to build master bias");
         rawBiasRadioPanel.add(biasAverageRadio);
-        biasMedianRadio = new JRadioButton("med");
+        biasMedianRadio = new JRadioButton(I18n.t("dp.med"));
         biasMedianRadio.setFont(p12);
         biasMedianRadio.setSelected(biasMedian);
         biasMedianRadio.setToolTipText("median raw files to build master bias");
@@ -1536,7 +1537,7 @@ public class Data_Processor implements PlugIn, ActionListener, ChangeListener, /
 
         JPanel masterBiasPanel = new JPanel(new SpringLayout());
 
-        useBiasBox = new JCheckBox("Enable", useBias);
+        useBiasBox = new JCheckBox(I18n.t("dp.enable"), useBias);
         useBiasBox.setFont(p12);
         useBiasBox.setPreferredSize(checkBoxSize);
         useBiasBox.setToolTipText("<html>Enable bias subtraction using the master bias file specified to the right<br>" +
@@ -1623,11 +1624,11 @@ public class Data_Processor implements PlugIn, ActionListener, ChangeListener, /
 
 
         JPanel darkPanel = new JPanel(new SpringLayout());
-        darkPanel.setBorder(BorderFactory.createTitledBorder(BorderFactory.createLineBorder(mainBorderColor, 1), "Dark Subtraction", TitledBorder.LEFT, TitledBorder.TOP, b12, Color.DARK_GRAY));
+        darkPanel.setBorder(BorderFactory.createTitledBorder(BorderFactory.createLineBorder(mainBorderColor, 1), I18n.t("dp.dark_sub"), TitledBorder.LEFT, TitledBorder.TOP, b12, Color.DARK_GRAY));
 
         JPanel rawDarkPanel = new JPanel(new SpringLayout());
 
-        createDarkBox = new JCheckBox("Build", createDark);
+        createDarkBox = new JCheckBox(I18n.t("dp.build"), createDark);
         createDarkBox.setFont(p12);
         createDarkBox.setPreferredSize(checkBoxSize);
         createDarkBox.setToolTipText("Build a new master dark file from the raw dark files specified to the right");
@@ -1639,12 +1640,12 @@ public class Data_Processor implements PlugIn, ActionListener, ChangeListener, /
 
         darkRadioGroup = new ButtonGroup();
 
-        darkAverageRadio = new JRadioButton("ave");
+        darkAverageRadio = new JRadioButton(I18n.t("dp.ave"));
         darkAverageRadio.setFont(p12);
         darkAverageRadio.setSelected(!darkMedian);
         darkAverageRadio.setToolTipText("average raw files to build master dark");
         darkOptionPanel.add(darkAverageRadio);
-        darkMedianRadio = new JRadioButton("med");
+        darkMedianRadio = new JRadioButton(I18n.t("dp.med"));
         darkMedianRadio.setFont(p12);
         darkMedianRadio.setSelected(darkMedian);
         darkMedianRadio.setToolTipText("median raw files to build master dark");
@@ -1733,7 +1734,7 @@ public class Data_Processor implements PlugIn, ActionListener, ChangeListener, /
 
         JPanel masterDarkPanel = new JPanel(new SpringLayout());
 
-        useDarkBox = new JCheckBox("Enable", useDark);
+        useDarkBox = new JCheckBox(I18n.t("dp.enable"), useDark);
         useDarkBox.setFont(p12);
         useDarkBox.setPreferredSize(checkBoxSize);
         useDarkBox.setToolTipText("<html>Enable dark subtraction using the master dark file specified to the right.<br>" +
@@ -1751,7 +1752,7 @@ public class Data_Processor implements PlugIn, ActionListener, ChangeListener, /
 //		masterDarkOptionPanel.add (headerLabel);
 
 
-        scaleExpTimeBox = new JCheckBox("scale", scaleExpTime);
+        scaleExpTimeBox = new JCheckBox(I18n.t("dp.scale"), scaleExpTime);
         scaleExpTimeBox.setEnabled(useBias);
         scaleExpTimeBox.setFont(p12);
         scaleExpTimeBox.setToolTipText("<html>" + "Scale the master dark pixel values by the" + "<br>" +
@@ -1760,7 +1761,7 @@ public class Data_Processor implements PlugIn, ActionListener, ChangeListener, /
         scaleExpTimeBox.addItemListener(this);
         masterDarkOptionPanel.add(scaleExpTimeBox);
 
-        deBiasMasterDarkBox = new JCheckBox("deBias", deBiasMasterDark);
+        deBiasMasterDarkBox = new JCheckBox(I18n.t("dp.debias"), deBiasMasterDark);
         deBiasMasterDarkBox.setEnabled(useBias);
         deBiasMasterDarkBox.setFont(p11);
         deBiasMasterDarkBox.setToolTipText("<html>" +
@@ -1848,11 +1849,11 @@ public class Data_Processor implements PlugIn, ActionListener, ChangeListener, /
 
 
         JPanel flatPanel = new JPanel(new SpringLayout());
-        flatPanel.setBorder(BorderFactory.createTitledBorder(BorderFactory.createLineBorder(mainBorderColor, 1), "Flat Division", TitledBorder.LEFT, TitledBorder.TOP, b12, Color.DARK_GRAY));
+        flatPanel.setBorder(BorderFactory.createTitledBorder(BorderFactory.createLineBorder(mainBorderColor, 1), I18n.t("dp.flat_div"), TitledBorder.LEFT, TitledBorder.TOP, b12, Color.DARK_GRAY));
 
         JPanel rawFlatPanel = new JPanel(new SpringLayout());
 
-        createFlatBox = new JCheckBox("Build", createFlat);
+        createFlatBox = new JCheckBox(I18n.t("dp.build"), createFlat);
         createFlatBox.setFont(p12);
         createFlatBox.setPreferredSize(checkBoxSize);
         createFlatBox.setToolTipText("Build a new master flat file from the raw flat files specified to the right");
@@ -1864,12 +1865,12 @@ public class Data_Processor implements PlugIn, ActionListener, ChangeListener, /
 
         flatRadioGroup = new ButtonGroup();
 
-        flatAverageRadio = new JRadioButton("ave");
+        flatAverageRadio = new JRadioButton(I18n.t("dp.ave"));
         flatAverageRadio.setFont(p12);
         flatAverageRadio.setSelected(!flatMedian);
         flatAverageRadio.setToolTipText("average raw files to build master flat");
         flatRadioPanelPanel.add(flatAverageRadio);
-        flatMedianRadio = new JRadioButton("med");
+        flatMedianRadio = new JRadioButton(I18n.t("dp.med"));
         flatMedianRadio.setFont(p12);
         flatMedianRadio.setSelected(flatMedian);
         flatMedianRadio.setToolTipText("median raw files to build master flat");
@@ -1958,7 +1959,7 @@ public class Data_Processor implements PlugIn, ActionListener, ChangeListener, /
 
         JPanel masterFlatPanel = new JPanel(new SpringLayout());
 
-        useFlatBox = new JCheckBox("Enable", useFlat);
+        useFlatBox = new JCheckBox(I18n.t("dp.enable"), useFlat);
         useFlatBox.setFont(p12);
         useFlatBox.setPreferredSize(checkBoxSize);
         useFlatBox.setToolTipText("<html>Enable flat field division using the master flat file specified to the right.</html>");
@@ -1968,7 +1969,7 @@ public class Data_Processor implements PlugIn, ActionListener, ChangeListener, /
         JPanel masterFlatOptionPanel = new JPanel(new SpringLayout());
         masterFlatOptionPanel.setPreferredSize(radioSize);
 
-        gradientRemovalCB = new JCheckBox("Remove Gradient", useGradientRemoval);
+        gradientRemovalCB = new JCheckBox(I18n.t("dp.remove_gradient"), useGradientRemoval);
         gradientRemovalCB.setFont(p11);
         gradientRemovalCB.setToolTipText("<html>Remove gradient from calibrated raw flats when Building a master flat.<br>" +
                 "Flat Division 'Build' must be selected to use this option.</html>");
@@ -2050,11 +2051,11 @@ public class Data_Processor implements PlugIn, ActionListener, ChangeListener, /
 
 
         JPanel linearityPanel = new JPanel(new SpringLayout());
-        linearityPanel.setBorder(BorderFactory.createTitledBorder(BorderFactory.createLineBorder(mainBorderColor, 1), "Image Correction", TitledBorder.LEFT, TitledBorder.TOP, b12, Color.DARK_GRAY));
+        linearityPanel.setBorder(BorderFactory.createTitledBorder(BorderFactory.createLineBorder(mainBorderColor, 1), I18n.t("dp.img_correction"), TitledBorder.LEFT, TitledBorder.TOP, b12, Color.DARK_GRAY));
 
         JPanel linearityLine1Panel = new JPanel(new SpringLayout());
 
-        useNLCBox = new JCheckBox("Enable Linearity Correction", useNLC);
+        useNLCBox = new JCheckBox(I18n.t("dp.enable_nlc"), useNLC);
         useNLCBox.setFont(p12);
         useNLCBox.setPreferredSize(checkboxPlusRadioSize);
         useNLCBox.setToolTipText("<html>" + "Enable correction of CCD non-linearity on a per pixel basis" + "<br>" +
@@ -2069,7 +2070,7 @@ public class Data_Processor implements PlugIn, ActionListener, ChangeListener, /
 //        SpringUtil.makeCompactGrid (NLCOptionPanel, 1, NLCOptionPanel.getComponentCount(), 0,0,0,0);
 //        linearityLine1Panel.add(NLCOptionPanel);
 
-        NLCLabel = new JLabel("New pixel value = ");
+        NLCLabel = new JLabel(I18n.t("dp.new_pixel_value")+" ");
         NLCLabel.setFont(b12);
         NLCLabel.setHorizontalAlignment(JTextField.LEFT);
         linearityLine1Panel.add(NLCLabel);
@@ -2147,7 +2148,7 @@ public class Data_Processor implements PlugIn, ActionListener, ChangeListener, /
 
         JPanel outlierControlPanel = new JPanel(new SpringLayout());
         outlierControlPanel.setPreferredSize(new Dimension(280, textboxHeight));
-        cosmicRemovalCB = new JCheckBox("Remove Outliers    ", useCosmicRemoval);
+        cosmicRemovalCB = new JCheckBox(I18n.t("dp.remove_outliers")+"    ", useCosmicRemoval);
         cosmicRemovalCB.setToolTipText("<html>Remove outliers (cosmic rays/hot pixels) from calibrated science images.<br>" +
                 "NOTE: Outlier removal may affect photometric accuracy. Use this feature with<br>" +
                 "extreme caution when extracting photometry from processed images.<br>" +
@@ -2157,14 +2158,14 @@ public class Data_Processor implements PlugIn, ActionListener, ChangeListener, /
         cosmicRemovalCB.addItemListener(this);
         outlierControlPanel.add(cosmicRemovalCB);
 
-        removeBrightOutliersCB = new JCheckBox("Bright", removeBrightOutliers);
+        removeBrightOutliersCB = new JCheckBox(I18n.t("dp.bright"), removeBrightOutliers);
         removeBrightOutliersCB.setToolTipText("<html>Enable to remove outliers above the median level.</html>");
         removeBrightOutliersCB.setFont(p12);
 //        outlierBrightOrDarkThresholdCB.setPreferredSize (checkBoxSize);
         removeBrightOutliersCB.addItemListener(this);
         outlierControlPanel.add(removeBrightOutliersCB);
 
-        removeDarkOutliersCB = new JCheckBox("Dark", removeDarkOutliers);
+        removeDarkOutliersCB = new JCheckBox(I18n.t("dp.dark_outlier"), removeDarkOutliers);
         removeDarkOutliersCB.setToolTipText("<html>Enable to remove outliers below the median level.</html>");
         removeDarkOutliersCB.setFont(p12);
 //        outlierBrightOrDarkThresholdCB.setPreferredSize (checkBoxSize);
@@ -2174,7 +2175,7 @@ public class Data_Processor implements PlugIn, ActionListener, ChangeListener, /
         SpringUtil.makeCompactGrid(outlierControlPanel, 1, outlierControlPanel.getComponentCount(), 0, 0, 2, 0);
         outlierRemovalPanel.add(outlierControlPanel);
 
-        outlierRadiusLabel = new JLabel("Radius:");
+        outlierRadiusLabel = new JLabel(I18n.t("dp.radius"));
         outlierRadiusLabel.setToolTipText("<html>The radius in pixels used to determine the median when removing outliers.<br>" +
                 "NOTE: Outlier removal may affect photometric accuracy. Use this feature with<br>" +
                 "extreme caution when extracting photometry from processed images.<br>" +
@@ -2198,7 +2199,7 @@ public class Data_Processor implements PlugIn, ActionListener, ChangeListener, /
         outlierRemovalPanel.add(outlierRadiusSpinner);
 
 
-        outlierThresholdLabel = new JLabel("    Threshold:");
+        outlierThresholdLabel = new JLabel("    "+I18n.t("dp.threshold"));
         outlierThresholdLabel.setToolTipText("<html>The threshold (in ADU) above the median value used to filter outliers.<br>" +
                 "NOTE: Outlier removal may affect photometric accuracy. Use this feature with<br>" +
                 "extreme caution when extracting photometry from processed images.<br>" +
@@ -2235,12 +2236,12 @@ public class Data_Processor implements PlugIn, ActionListener, ChangeListener, /
 
 
         JPanel FITSHeaderPanel = new JPanel(new SpringLayout());
-        FITSHeaderPanel.setBorder(BorderFactory.createTitledBorder(BorderFactory.createLineBorder(mainBorderColor, 1), "FITS Header Updates", TitledBorder.LEFT, TitledBorder.TOP, b12, Color.DARK_GRAY));
+        FITSHeaderPanel.setBorder(BorderFactory.createTitledBorder(BorderFactory.createLineBorder(mainBorderColor, 1), I18n.t("dp.fits_header"), TitledBorder.LEFT, TitledBorder.TOP, b12, Color.DARK_GRAY));
 
         JPanel calcPanel = new JPanel(new SpringLayout());
 
 //        calcAirmassBox = new JCheckBox("<html>Enable<br>General</html>",calcHeaders);
-        calcAirmassBox = new JCheckBox("General", calcHeaders);
+        calcAirmassBox = new JCheckBox(I18n.t("dp.general"), calcHeaders);
         calcAirmassBox.setFont(p12);
         calcAirmassBox.setPreferredSize(checkBoxSize);
         calcAirmassBox.setToolTipText("<html>Calculate the astrophysical quantities defined in the<br>" +
@@ -2255,7 +2256,7 @@ public class Data_Processor implements PlugIn, ActionListener, ChangeListener, /
 //        JPanel FITSOptionPanel = new JPanel(new SpringLayout());
 //        FITSOptionPanel.setPreferredSize(radioSize);
 //        plateSolveBox = new JCheckBox("<html>Plate<br>Solve</html>",plateSolve);
-        plateSolveBox = new JCheckBox("Plate Solve", plateSolve);
+        plateSolveBox = new JCheckBox(I18n.t("dp.plate_solve"), plateSolve);
         plateSolveBox.setFont(p12);
         plateSolveBox.setPreferredSize(radioSize);
         plateSolveBox.setToolTipText("<html>Plate solve using network connection to astrometry.net web interface.<br>" +
@@ -2296,7 +2297,7 @@ public class Data_Processor implements PlugIn, ActionListener, ChangeListener, /
         calcPanel.add(fitsToolPanel);
 
         JPanel objectCoordinateSourcePanel = new JPanel(new SpringLayout());
-        objectCoordinateSourcePanel.setBorder(BorderFactory.createTitledBorder(BorderFactory.createLineBorder(Color.LIGHT_GRAY, 1), "Target Coordinate Source", TitledBorder.LEFT, TitledBorder.TOP, p12, Color.DARK_GRAY));
+        objectCoordinateSourcePanel.setBorder(BorderFactory.createTitledBorder(BorderFactory.createLineBorder(Color.LIGHT_GRAY, 1), I18n.t("dp.target_coord_src"), TitledBorder.LEFT, TitledBorder.TOP, p12, Color.DARK_GRAY));
 
         objectCoordinateSourceCombo = new JComboBox(objectCoordinateSources);
 //		observatoryLocationSourceCombo.setPreferredSize(new Dimension((int)(coordSize.width*3.0),coordSize.height+2));
@@ -2313,7 +2314,7 @@ public class Data_Processor implements PlugIn, ActionListener, ChangeListener, /
 
 
         JPanel observatoryLocationSourcePanel = new JPanel(new SpringLayout());
-        observatoryLocationSourcePanel.setBorder(BorderFactory.createTitledBorder(BorderFactory.createLineBorder(Color.LIGHT_GRAY, 1), "Observatory Location Source", TitledBorder.LEFT, TitledBorder.TOP, p12, Color.DARK_GRAY));
+        observatoryLocationSourcePanel.setBorder(BorderFactory.createTitledBorder(BorderFactory.createLineBorder(Color.LIGHT_GRAY, 1), I18n.t("dp.obs_loc_src"), TitledBorder.LEFT, TitledBorder.TOP, p12, Color.DARK_GRAY));
 
         observatoryLocationSourceCombo = new JComboBox(observatoryLocationSources);
 //		observatoryLocationSourceCombo.setPreferredSize(new Dimension((int)(coordSize.width*3.0),coordSize.height+2));
@@ -2340,11 +2341,11 @@ public class Data_Processor implements PlugIn, ActionListener, ChangeListener, /
 
 
         JPanel outputFilePanel = new JPanel(new SpringLayout());
-        outputFilePanel.setBorder(BorderFactory.createTitledBorder(BorderFactory.createLineBorder(mainBorderColor, 1), "Save Calibrated Images", TitledBorder.LEFT, TitledBorder.TOP, b12, Color.DARK_GRAY));
+        outputFilePanel.setBorder(BorderFactory.createTitledBorder(BorderFactory.createLineBorder(mainBorderColor, 1), I18n.t("dp.save_calibrated"), TitledBorder.LEFT, TitledBorder.TOP, b12, Color.DARK_GRAY));
 
         JPanel outputPanel = new JPanel(new SpringLayout());
 
-        saveProcessedDataBox = new JCheckBox("Enable", saveProcessedData);
+        saveProcessedDataBox = new JCheckBox(I18n.t("dp.enable"), saveProcessedData);
         saveProcessedDataBox.setFont(p12);
         saveProcessedDataBox.setToolTipText("Save the calibrated images using the settings to the right.");
         saveProcessedDataBox.setPreferredSize(checkBoxSize);
@@ -2373,7 +2374,7 @@ public class Data_Processor implements PlugIn, ActionListener, ChangeListener, /
         SpringUtil.makeCompactGrid(saveRadioPanelPanel, 1, saveRadioPanelPanel.getComponentCount(), 0, 0, 0, 0);
         outputPanel.add(saveRadioPanelPanel);
 
-        subDirLabel = new JLabel("  Sub-dir:");
+        subDirLabel = new JLabel("  "+I18n.t("dp.subdir"));
         subDirLabel.setFont(p12);
         subDirLabel.setHorizontalAlignment(JTextField.RIGHT);
         outputPanel.add(subDirLabel);
@@ -2387,7 +2388,7 @@ public class Data_Processor implements PlugIn, ActionListener, ChangeListener, /
         saveDirField.getDocument().addDocumentListener(new thisDocumentListener());
         outputPanel.add(saveDirField);
 
-        suffixLabel = new JLabel("  Suffix:");
+        suffixLabel = new JLabel("  "+I18n.t("dp.suffix"));
         suffixLabel.setFont(p12);
         suffixLabel.setHorizontalAlignment(JTextField.RIGHT);
         outputPanel.add(suffixLabel);
@@ -2402,7 +2403,7 @@ public class Data_Processor implements PlugIn, ActionListener, ChangeListener, /
         saveSuffixField.getDocument().addDocumentListener(new thisDocumentListener());
         outputPanel.add(saveSuffixField);
 
-        saveFormatLabel = new JLabel("  Format:");
+        saveFormatLabel = new JLabel("  "+I18n.t("dp.format"));
         saveFormatLabel.setFont(p12);
         saveFormatLabel.setHorizontalAlignment(JTextField.RIGHT);
         outputPanel.add(saveFormatLabel);
@@ -2446,7 +2447,7 @@ public class Data_Processor implements PlugIn, ActionListener, ChangeListener, /
 
 
         JPanel postProcessPanel = new JPanel(new SpringLayout());
-        postProcessPanel.setBorder(BorderFactory.createTitledBorder(BorderFactory.createLineBorder(mainBorderColor, 1), "Post Processing", TitledBorder.LEFT, TitledBorder.TOP, b12, Color.DARK_GRAY));
+        postProcessPanel.setBorder(BorderFactory.createTitledBorder(BorderFactory.createLineBorder(mainBorderColor, 1), I18n.t("dp.post_processing"), TitledBorder.LEFT, TitledBorder.TOP, b12, Color.DARK_GRAY));
 
         JPanel postPanel = new JPanel(new SpringLayout());
 
@@ -2464,7 +2465,7 @@ public class Data_Processor implements PlugIn, ActionListener, ChangeListener, /
         saveImagePanel.setBorder(BorderFactory.createLineBorder(Color.LIGHT_GRAY));
 
 
-        saveImageBox = new JCheckBox("Save Image", saveImage);
+        saveImageBox = new JCheckBox(I18n.t("dp.save_image"), saveImage);
         saveImageBox.setFont(p12);
         saveImageBox.setEnabled(showScience);
         saveImageBox.setToolTipText("<html>Save calibrated science image display (with aperture and other overlays) to a specified fixed file<br>" +
@@ -2510,7 +2511,7 @@ public class Data_Processor implements PlugIn, ActionListener, ChangeListener, /
         JPanel preMacroPanel = new JPanel(new SpringLayout());
         preMacroPanel.setBorder(BorderFactory.createLineBorder(Color.LIGHT_GRAY));
 
-        runPreMacroBox = new JCheckBox("Macro 1", runPreMacro);
+        runPreMacroBox = new JCheckBox(I18n.t("dp.macro1"), runPreMacro);
         runPreMacroBox.setToolTipText("<html>Enable Macro 1.<br>" +
                 "The processing order of enabled options is:<br>" +
                 "Image calibration, Macro 1, Outlier Removal, Macro 2, Plate Solve, Save processed images, <br>" +
@@ -2568,7 +2569,7 @@ public class Data_Processor implements PlugIn, ActionListener, ChangeListener, /
         JPanel savePlotPanel = new JPanel(new SpringLayout());
         savePlotPanel.setBorder(BorderFactory.createLineBorder(Color.LIGHT_GRAY));
 
-        savePlotBox = new JCheckBox("Save Plot", savePlot);
+        savePlotBox = new JCheckBox(I18n.t("dp.save_plot"), savePlot);
         savePlotBox.setFont(p12);
         savePlotBox.setEnabled(runMultiPlot);
         savePlotBox.setToolTipText("<html>Save plot image to a specified fixed file after multi-aperture runs on each calibrated science image<br>" +
@@ -2612,7 +2613,7 @@ public class Data_Processor implements PlugIn, ActionListener, ChangeListener, /
         JPanel postMacroPanel = new JPanel(new SpringLayout());
         postMacroPanel.setBorder(BorderFactory.createLineBorder(Color.LIGHT_GRAY));
 
-        runPostMacroBox = new JCheckBox("Macro 2", runPostMacro);
+        runPostMacroBox = new JCheckBox(I18n.t("dp.macro2"), runPostMacro);
         runPostMacroBox.setToolTipText("<html>Enable Macro 2.<br>" +
                 "The processing order of enabled options is:<br>" +
                 "Image calibration, Macro 1, Outlier Removal, Macro 2, Plate Solve, Save processed images, <br>" +
@@ -2670,7 +2671,7 @@ public class Data_Processor implements PlugIn, ActionListener, ChangeListener, /
 
 
         JPanel controlProcessingPanel = new JPanel(new SpringLayout());
-        controlProcessingPanel.setBorder(BorderFactory.createTitledBorder(BorderFactory.createLineBorder(mainBorderColor, 1), "Control Panel", TitledBorder.LEFT, TitledBorder.TOP, b12, Color.DARK_GRAY));
+        controlProcessingPanel.setBorder(BorderFactory.createTitledBorder(BorderFactory.createLineBorder(mainBorderColor, 1), I18n.t("dp.control_panel"), TitledBorder.LEFT, TitledBorder.TOP, b12, Color.DARK_GRAY));
 
         JPanel controlPanel = new JPanel();
         controlPanel.setLayout(new BoxLayout(controlPanel, BoxLayout.X_AXIS));
@@ -2681,7 +2682,7 @@ public class Data_Processor implements PlugIn, ActionListener, ChangeListener, /
 
         JPanel pollingPanel = new JPanel();//new SpringLayout());
         pollingPanel.setLayout(new BoxLayout(pollingPanel, BoxLayout.X_AXIS));
-        pollingPanel.setBorder(BorderFactory.createTitledBorder(BorderFactory.createLineBorder(Color.LIGHT_GRAY, 1), "Polling Interval", TitledBorder.CENTER, TitledBorder.TOP, p12, Color.DARK_GRAY));
+        pollingPanel.setBorder(BorderFactory.createTitledBorder(BorderFactory.createLineBorder(Color.LIGHT_GRAY, 1), I18n.t("dp.polling_interval"), TitledBorder.CENTER, TitledBorder.TOP, p12, Color.DARK_GRAY));
 //        pollingPanel.setMaximumSize(radioSize);
 
         pollingIntervalModel = new SpinnerNumberModel(pollingInterval, 0, null, 1);
@@ -2718,7 +2719,7 @@ public class Data_Processor implements PlugIn, ActionListener, ChangeListener, /
         controlPanel.add(Box.createHorizontalStrut(10));
 
 //        controlPanel.setBorder(BorderFactory.createEmptyBorder());
-        startButton = new JButton("START");
+        startButton = new JButton(I18n.t("dp.start"));
         startButton.setToolTipText("<html>Click START to begin processing all files. While files are being<br>" +
                 "processed, this button shows RUNNING. If PAUSE is pressed while RUNNING,<br>" +
                 "this button shows CONTINUE. Pressing CONTINUE resumes processing at the<br>" +
@@ -2730,7 +2731,7 @@ public class Data_Processor implements PlugIn, ActionListener, ChangeListener, /
         controlPanel.add(startButton);
         controlPanel.add(Box.createHorizontalStrut(10));
 
-        pauseButton = new JButton("PAUSE");
+        pauseButton = new JButton(I18n.t("dp.pause"));
         pauseButton.addActionListener(this);
         pauseButton.setToolTipText("<html>Click to PAUSE processing of files while in RUNNING state. Click CONTINUE<br>" +
                 "to resume processing files at the point where PAUSE was pressed, or<br>" +
@@ -2741,7 +2742,7 @@ public class Data_Processor implements PlugIn, ActionListener, ChangeListener, /
         controlPanel.add(pauseButton);
         controlPanel.add(Box.createHorizontalStrut(30));
 
-        clearButton = new JButton("RESET");
+        clearButton = new JButton(I18n.t("dp.reset"));
         clearButton.setMargin(new Insets(5, 25, 5, 25));
         clearButton.setFont(b12);
         clearButton.setPreferredSize(new Dimension(125, 30));
@@ -2756,7 +2757,7 @@ public class Data_Processor implements PlugIn, ActionListener, ChangeListener, /
 
         JPanel statusPanel = new JPanel(new SpringLayout());
 
-        JLabel processedLabel = new JLabel("  Processed:");
+        JLabel processedLabel = new JLabel("  "+I18n.t("dp.processed"));
         processedLabel.setFont(b12);
         processedLabel.setHorizontalAlignment(JTextField.RIGHT);
         statusPanel.add(processedLabel);
@@ -2768,7 +2769,7 @@ public class Data_Processor implements PlugIn, ActionListener, ChangeListener, /
         processedNumLabel.setPreferredSize(validFilesSize);
         statusPanel.add(processedNumLabel);
 
-        JLabel ignoredLabel = new JLabel("  Remaining:");
+        JLabel ignoredLabel = new JLabel("  "+I18n.t("dp.remaining"));
         ignoredLabel.setFont(b12);
         ignoredLabel.setHorizontalAlignment(JTextField.RIGHT);
         statusPanel.add(ignoredLabel);
@@ -3637,7 +3638,7 @@ public class Data_Processor implements PlugIn, ActionListener, ChangeListener, /
                 running = false;
                 active = false;
                 totalNumFilesInDir = 0;
-                startButton.setText("START");
+                startButton.setText(I18n.t("dp.start"));
                 startButton.setForeground(Color.black);
                 startButton.repaint();
                 countValidFiles();
@@ -5369,7 +5370,7 @@ public class Data_Processor implements PlugIn, ActionListener, ChangeListener, /
         foundImages = 0;
         ignoredImages = 0;
         totalNumFilesInDir = 0;
-        startButton.setText("START");
+        startButton.setText(I18n.t("dp.start"));
         startButton.setForeground(Color.black);
         startButton.repaint();
         countValidFiles();
